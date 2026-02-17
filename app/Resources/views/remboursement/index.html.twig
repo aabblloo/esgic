@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Remboursements list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for remboursement in remboursements %}
+            <tr>
+                <td><a href="{{ path('remboursement_show', { 'id': remboursement.id }) }}">{{ remboursement.id }}</a></td>
+                <td>{% if remboursement.date %}{{ remboursement.date|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ remboursement.montant }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('remboursement_show', { 'id': remboursement.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('remboursement_edit', { 'id': remboursement.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('remboursement_new') }}">Create a new remboursement</a>
+        </li>
+    </ul>
+{% endblock %}

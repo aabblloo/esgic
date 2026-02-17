@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ titre }}{% endblock %}
+{% block titre %}{{ titre }}{% endblock %}
+
+{% block body %}
+
+    <div class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="btn btn-link py-0" href="{{ path('autrepaiement_index') }}">
+                <i class="fa fa-list"></i>
+                Liste
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="btn btn-link py-0" href="{{ path('autrepaiement_edit', {'id': autrePaiement.id}) }}">
+                <i class="fa fa-pencil-alt"></i>
+                Editer
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{{ path('autrepaiement_show',{'id':autrePaiement.id}) }}" class="btn btn-link py-0">
+                <i class="fa fa-print"></i>
+                Imprimer
+            </a>
+        </li>
+
+        <li class="breadcrumb-item">
+            {{ form_start(delete_form, {'attr':{'class':'d-inline'}}) }}
+            <button class="btn btn-link py-0 text-danger"
+                    onclick="return confirm('Voulez-vous supprimer cet élément ?');">
+                <i class="fa fa-trash-alt"></i>
+                Supprimer
+            </button>
+            {{ form_end(delete_form) }}
+        </li>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th style="width: 40%">Date</th>
+                    <td>{{ autrePaiement.date|dateFr }}</td>
+                </tr>
+                <tr>
+                    <th>Référence</th>
+                    <td>{{ autrePaiement.ref }}</td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td>{{ autrePaiement.type }}</td>
+                </tr>
+                <tr>
+                    <th>Montant</th>
+                    <td>{{ autrePaiement.montant|formatFr }}</td>
+                </tr>
+                <tr>
+                    <th>Etudiant</th>
+                    <td>{{ autrePaiement.etudiant.prenomNomMle }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="col-md-5">
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th style="width: 40%">Année académique</th>
+                    <td>{{ autrePaiement.anScolaire ? autrePaiement.anScolaire.nom : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Banque</th>
+                    <td>{{ autrePaiement.banque ? autrePaiement.banque.nom : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Mode opération</th>
+                    <td>{{ autrePaiement.modeOperation }}</td>
+                </tr>
+                <tr>
+                    <th>Date saisie</th>
+                    <td>{{ autrePaiement.createAt|dateFr }}</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+    <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+{% endblock %}

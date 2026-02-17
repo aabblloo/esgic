@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="col-md-4">
+            <table class="table table-borderless table-hover">
+                {{ form_row(form.name) }}
+                {{ form_row(form.username) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.plainPassword.first) }}
+                {{ form_row(form.plainPassword.second) }}
+                {{ form_row(form.site) }}
+                {{ form_row(form.isActive) }}
+                <tr>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-sm fa-save"></i>
+                            Enregistrer
+                        </button>
+                        <a href="{{ path('user_index') }}" class="btn btn-primary">
+                            <i class="fa fa-sm fa-arrow-left"></i>
+                            Annuler
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.groups) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $("#admin").addClass("active");
+            $("#user_index").addClass("active");
+        });
+
+        $(".chosen-select").chosen({
+            allow_single_deselect: true,
+            no_results_text: "Option non trouvée !",
+            width: "100%",
+        });
+
+    </script>
+{% endblock %}

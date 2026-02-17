@@ -1,0 +1,59 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+    <h5>Liste des parrainages</h5>
+
+    <h6>
+        Année scolaire :
+        <span class="value">{{ anScolaire.nom }}</span>
+    </h6>
+
+    {% if site %}
+        <h6>
+            Site :
+            <span class="value">{{ site }}</span>
+        </h6>
+    {% endif %}
+
+    <h6>
+        Nombre :
+        <span class="value">{{ etudiantsParProfesseur | length }}</span>
+    </h6>
+
+    {% for professeurData in etudiantsParProfesseur %}
+        {# Vérifier si le professeur a des étudiants associés avant d'afficher #}
+        {% if professeurData.etudiants is not empty %}
+            <h6>
+                Parrain : {{ professeurData.professeur.prenom }} {{ professeurData.professeur.nom }}
+                <small>Spécialité : {{ professeurData.professeur.specialite }}</small>
+            </h6>
+
+            <table class="table table-bordered table-striped table-sm" style="margin-top: 20px">
+                <thead class="bg-info text-white">
+                    <th style="width: 20%">Prénom</th>
+                    <th style="width: 20%">Nom</th>
+                    <th style="width: 10%">Matricule</th>
+                    <th style="width: 10%">Classe</th>
+                    <th style="width: 10%">Contact</th>
+                </thead>
+
+                <tbody class="value">
+                    {% for etd in professeurData.etudiants %}
+                        <tr>
+                            <td>{{ etd.prenom }}</td>
+                            <td>{{ etd.nom }}</td>
+                            <td>{{ etd.matricule }}</td>
+							<td>{{ etd.etudiantClasses[0].classe.code }}</td>
+                            {# <td>{{ etd.lastClasse }}</td> #}
+                            <td>{{ etd.telephone is empty ? 'Non renseigné' : etd.telephone }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

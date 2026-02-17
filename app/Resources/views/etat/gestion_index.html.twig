@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ titre }}
+{% endblock %}
+
+{% block titre %}
+	{{ titre }}
+{% endblock %}
+
+{% block body %}
+	<div>
+		<ul class="white" style="list-style-type: square;">
+
+			{% if is_granted('ROLE_SAISIE') %}
+				<li>
+					<a href="{{ path('lst_etd_classe') }}" target="_blank">
+						Liste des étudiants par classe
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_SAISIE') %}
+				<li>
+					<a href="{{ path('lst_etd_classe_password') }}" target="_blank">
+						Liste des étudiants par classe avec mot de passe
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('lst_etd_filiere') }}" target="_blank">
+						Liste des étudiants par filière
+					</a>
+				</li>
+
+				
+			{% endif %}
+			{% if is_granted('ROLE_RESPONSABLE') %}
+			<li>
+				<a>Niveau de paiement par étudiant</a>
+			</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_SAISIE') or is_granted('ROLE_SCOLARITE')  %}
+				<li>
+					<a href="{{ path('lst_paie_date') }}" target="_blank">
+						Les paiements effectués entre deux dates
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_SAISIE') %}
+				<li>
+					<a href="{{ path('lst_etd_classe_seuil') }}" target="_blank">
+						Liste des étudiants dont le paiement est en dessous d’un montant par classe
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('lst_etd_classe_100') }}" target="_blank">
+						Liste des étudiants à 100% de paiement
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('lst_dep_annee') }}" target="_blank">
+						Liste des dépenses par année scolaire
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('lst_dep_date') }}" target="_blank">
+						Liste des dépenses au cours d’une période
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a>
+						Liste des bordereaux émis par une banque au cours d’une période
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('honoraire_prof') }}" target="_blank">
+						Honoraires mensuels des professeurs
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('honoraire_prof_periode') }}" target="_blank">
+						Honoraires des professeurs par periode
+					</a>
+				</li>
+			{% endif %}
+			{% if is_granted('ROLE_RESPONSABLE') %}
+				<li>
+					<a href="{{ path('lst_parrain') }}" target="_blank">
+						Liste parrainage
+					</a>
+				</li>
+			{% endif %}
+			{% if is_granted('ROLE_SAISIE') or is_granted('ROLE_RESPONSABLE') or is_granted('ROLE_COMMUNICATION') or is_granted('ROLE_DIRECTEUR') or is_granted('ROLE_SCOLARITE') or is_granted('ROLE_SAISIE_CARTE') or is_granted('ROLE_RESP_SAISIE')  %}
+				<li>
+					<a href="{{path('lst_paie_soutenance')}}" target="_blank">
+						Liste des paiements des frais de soutenance
+					</a>
+				</li>
+			{% endif %}
+			{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_DIRECTEUR') %}
+				<li>
+					<a href="{{path('sit_horaire')}}" target="_blank">
+						Situation Horaire
+					</a>
+				</li>
+			{% endif %}
+
+			
+				<li>
+					<a href="{{path('cours_non_effectues')}}" target="_blank">
+						Liste des cours non effectués
+					</a>
+				</li>
+
+			{% if is_granted('ROLE_SAISIE') %}
+				<li>
+					<a href="{{ path('lst_hebdo') }}" target="_blank">
+						Liste hebdomadaire
+					</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_SAISIE') %}
+				<li>
+					<a href="{{ path('lst_releve_notes') }}" target="_blank">
+						Releve des notes
+					</a>
+				</li>
+			{% endif %}
+			
+
+		</ul>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		$(function () {
+$('#gestion_scolaire').addClass('active');
+$('#gs_etat_index').addClass('active');
+});
+	</script>
+{% endblock %}

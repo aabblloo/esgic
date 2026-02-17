@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+    <div class="breadcrumb">
+        <a class="btn btn-link" href="{{ path('cycle_new') }}">
+            <i class="fa fa-recycle "></i>
+            Ajouter un cycle
+        </a>
+    </div>
+
+    <table class="table table-bordered- table-hover table-striped " id="myTable">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Nom</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cycle in cycles %}
+                <tr>
+                    <td>{{ cycle.code }}</td>
+                    <td>{{ cycle.nom }}</td>
+                    <td class="text-right">
+                        <a href="{{ path('cycle_edit', {'id': cycle.id}) }}" class="btn btn-link py-0">
+                            <i class="fa fa-edit "></i>
+                            Modifier
+                        </a>
+                        <a href="{{ path('cycle_delete', {'id': cycle.id}) }}" class="btn btn-link py-0 text-danger">
+                            <i class="fa fa-trash "></i>
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <caption>Pas d'enregistrement</caption>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $("#admin").addClass("active");
+            $("#cycle_index").addClass("active");
+
+            $('#myTable').DataTable({
+                order: [],
+            });
+
+        });
+    </script>
+{% endblock %}

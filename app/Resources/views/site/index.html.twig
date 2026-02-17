@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% set titre = 'Liste des sites' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+{% block body %}
+
+    <div class="breadcrumb">
+        <a class="btn btn-link" href="{{ path('site_index') }}">
+            <i class="fa  fa-school"></i>
+            Liste des sites
+        </a>
+        <a class="btn btn-link" href="{{ path('site_new') }}">
+            <i class="fa  fa-school"></i>
+            Ajouter un site
+        </a>
+    </div>
+
+    <table class="table table-striped table-hover mt-3" id="myTable">
+        <thead>
+            <tr>
+                <th style="width: 40%">Nom</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for site in sites %}
+            <tr>
+                <td>
+                    {{ site.nom }}
+                </td>
+                <td class="text-right">
+                    <a href="{{ path('site_edit', {'id': site.id}) }}" class="btn btn-link py-0">
+                        <i class="fa  fa-edit"></i>
+                        Modifier
+                    </a>
+                    <a href="{{ path('site_show', {'id': site.id}) }}" class="btn btn-link py-0 text-danger">
+                        <i class="fa  fa-trash-alt"></i>
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $('#admin').addClass('active');
+            $('#site_index').addClass('active');
+
+            $('#myTable').DataTable({
+                order: [],
+            });
+
+        });
+    </script>
+{% endblock %}

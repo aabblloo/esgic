@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}{{ titre }}{% endblock %}
+{% block titre %}{{ titre }}{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="col-md-5">
+            <table class="table table-borderless">
+                <tr>
+                    <td class="p-0" style="width: 40%"></td>
+                    <td class="p-0"></td>
+                </tr>
+
+                {{ form_row(form.date) }}
+                {{ form_row(form.ref) }}
+                {{ form_row(form.type) }}
+                {{ form_row(form.montant) }}
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-primary">Enregistrer</button>
+                        <a href="{{ path('autrepaiement_show',{'id': autrePaiement.id}) }}" class="btn btn-primary">Annuler</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-md-5">
+            <table class="table table-borderless">
+                <tr>
+                    <td class="p-0" style="width: 40%"></td>
+                    <td class="p-0"></td>
+                </tr>
+
+                {{ form_row(form.etudiant) }}
+                {{ form_row(form.anScolaire) }}
+                {{ form_row(form.modeOperation) }}
+                {{ form_row(form.banque) }}
+
+            </table>
+        </div>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('chosen/chosen.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+    <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $("#gestion_scolaire").addClass("active");
+            $("#autre_paiement_index").addClass("active");
+
+            $(".chosen-select").chosen({
+                allow_single_deselect: true,
+                no_results_text: "Option non trouvée !",
+            });
+        });
+    </script>
+{% endblock %}

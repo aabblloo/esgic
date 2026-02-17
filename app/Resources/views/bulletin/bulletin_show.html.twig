@@ -1,0 +1,49 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}Bulletin{% endblock %}
+
+{% block body %}
+    <h5>Bulletin de : <span class="value">{{ etudiant.prenomNom }}</span></h5>
+    <h6>Période : <span class="value">{{ periode.nom }}</span></h6>
+    <h6>Année: <span class="value">{{ annee.nom }}</span></h6>
+    <h6>Classe : <span class="value">{{ classe.code }}</span></h6>
+
+    <table class="table table-sm table-bordered">
+        <thead class="bg-info text-white">
+            <tr>
+                <th>Matière</th>
+                <th>Note classe</th>
+                <th>Note compo.</th>
+                <th>Coéff.</th>
+                <th>Moyenne</th>
+            </tr>
+        </thead>
+        <tbody class="value">
+            {% for note in notes %}
+            <tr>
+                <td>{{ note.matiere }}</td>
+                <td style="text-align: right;">{{ note.noteClasse|formatFr(2) }}</td>
+                <td style="text-align: right;">{{ note.noteCompo|formatFr(2) }}</td>
+                <td style="text-align: right;">{{ note.coeff }}</td>
+                <td style="text-align: right;">{{ note.moyenne|formatFr(2) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot class="value bg-light">
+            <tr>
+                <th>Total</th>
+                <th style="text-align: right;"></th>
+                <th style="text-align: right;"></th>
+                <th style="text-align: right;">{{ sommeCoeff }}</th>
+                <th style="text-align: right;">{{ sommeMoyenne|formatFr(2) }}</th>
+            </tr>
+            <tr class="text-danger">
+                <th>Moyenne</th>
+                <th style="text-align: right;"></th>
+                <th style="text-align: right;"></th>
+                <th style="text-align: right;"></th>
+                <th style="text-align: right;">{{ moyenneGenerale|formatFr(2) }}</th>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock %}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {{ app_name }}
+        - Carte Etudiant
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        body {
+            font-size: 7pt;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 1mm;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 10pt;
+        }
+
+        h2 {
+            font-size: 9pt;
+        }
+
+        h3 {
+            font-size: 8pt;
+        }
+
+        hr {
+            padding: 0;
+            margin: 0 auto;
+            border-bottom: 2px solid black;
+            width: 7cm;
+        }
+
+        .carte {
+            width: 8.5cm;
+            height: 5.5cm;
+            padding: 2mm;
+            margin: auto;
+            border: 1px solid silver;
+            background-image: url("{{ absolute_url(asset('images/carte_etudiant.jpg')) }}");
+            background-size: 100%;
+            background-repeat: no-repeat;
+            page-break-after: always;
+        }
+
+        .title {
+            text-align: center;
+        }
+
+        .photo {
+            width: 100%;
+            margin-bottom: 1mm;
+        }
+
+        .logo {
+            float: left;
+            width: 2cm;
+        }
+
+        .valeur {
+            font-weight: bold;
+            font-size: 95%;
+        }
+
+        .clear {
+            clear: both;
+        }
+    </style>
+</head>
+
+<body>
+{% for liste in liste_etudiants %}
+    <div class="carte">
+
+        <div style="position: relative">
+            <div class="valeur" style="font-size: 110%; color: white; position: absolute; top: 1.77cm; right: 0.4cm">
+                {{ search.annee.nom }}
+            </div>
+
+            <div class="valeur" style="position: absolute; left: 2.9cm; top: 2cm; white-space: nowrap;">
+                <div style="position: absolute; top: 0.43cm;">
+                    {{ liste.etudiant.matricule }}
+                </div>
+
+                <div style="position: absolute; top: 0.79cm;">
+                    {{ liste.etudiant.nom }}
+                </div>
+
+                <div style="position: absolute; top: 1.12cm;">
+                    {{ liste.etudiant.prenom }}
+                </div>
+
+                <div style="position: absolute; top: 1.48cm;">
+                    {{ liste.etudiant.dateNaiss|dateFr }}
+                </div>
+
+                <div style="position: absolute; top: 1.83cm;">
+                    {{ liste.etudiant.lieuNaiss }}
+                </div>
+
+                <div style="position: absolute; top: 2.20cm;">
+                    {{ liste.etudiant.telephone }}
+                </div>
+
+                <div style="position: absolute; top: 2.60cm;">
+                    {{ liste.etudiant.lastClasse }}
+                </div>
+
+                <div style="position: absolute; top: 2.94cm;">
+                    {{ search.validite  }}
+                </div>
+
+            </div>
+
+            <div style="float: right; width: 2cm; margin-right: 0.34cm; margin-top: 2.43cm;">
+                <img class="photo"
+                     src="{{ absolute_url(asset('images/etudiants/'~liste.etudiant.photoDefault)) }}">
+            </div>
+
+        </div>
+
+    </div>
+
+{% endfor %}
+</body>
+
+</html>
+</body>
+
+</html>

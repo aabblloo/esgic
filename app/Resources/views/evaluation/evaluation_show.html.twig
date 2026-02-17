@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+    <div class="breadcrumb_">        
+        <a class="btn btn-link" href="{{ path('evaluation_edit', {'id': evaluation.id}) }}">
+            <i class="fa fa-sm fa-edit"></i>
+            Modifier
+        </a>
+
+        <a class="btn btn-link" href="{{ path('evaluation_index') }}">
+            <i class="fa fa-sm fa-list"></i>
+            Liste
+        </a>
+
+        <a class="btn btn-link text-danger" href="{{ path('evaluation_delete', {'id': evaluation.id}) }}">
+            <i class="fa fa-sm fa-trash-alt"></i>
+            Supprimer
+        </a>
+    </div>    
+
+    <div class="row">
+        <div class="col-4">
+            <table class="table table-borderless table-hover table-sm">
+                <tbody>
+                    <tr style="width: 40%;">
+                        <th>Evaluation</th>
+                        <td class="value">{{ evaluation.periode.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Année scolaire</th>
+                        <td class="value">{{ evaluation.anScolaire.nom }}</td>
+                    </tr>                    
+                    <tr>
+                        <th>Classe</th>
+                        <td class="value">{{ evaluation.classe.code }}</td>
+                    </tr>
+                    <tr>
+                        <th>Matière</th>
+                        <td class="value">{{ evaluation.matiere.code }}</td>
+                    </tr>
+                    <tr>
+                        <th>Site</th>
+                        <td class="value">{{ evaluation.site }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <p>
+        <a class="btn btn-link" href="{{ path('evaluation_detail_edit', {'id': evaluation.id}) }}">
+            <i class="fa fa-sm fa-calculator"></i>
+            <i class="fa fa-sm fa-arrow-down"></i>
+            Ajouter ou Modifier les notes            
+        </a>
+    </p>
+    <table class="table table-bordered table-hover table-sm">
+        <thead>
+            <tr>
+                <th>Etudiant</th>
+                <th>Note classe</th>
+                <th>Note compo</th>
+                <th>Coéff.</th>
+                <th>Moyenne</th>
+            </tr>
+        </thead>
+        <tbody class="value">
+            {% for note in notes %}
+                <tr>
+                    <td>{{ note.etudiant.prenomNom }}</td>
+                    <td style="text-align: right;">
+                        {% if note.noteClasse %}
+                            {{ note.noteClasse|formatFr(2) }}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        {% if note.noteCompo %}
+                            {{ note.noteCompo|formatFr(2) }}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        {% if note.noteCompo %}
+                            {{ note.coeff|formatFr }}
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right;">
+                        {% if note.moyenne %}
+                            {{ note.moyenne|formatFr(2) }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function () {
+            $("#gestion_bulletin").addClass("active");
+        });
+    </script>
+{% endblock %}

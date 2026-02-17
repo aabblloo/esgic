@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="breadcrumb">
+        <a href="{{ path('user_new') }}" class="btn btn-link">
+            <i class="fa  fa-user"></i>
+            Ajouter un utilisateur
+        </a>
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+            <a href="{{ path('group_index') }}" class="btn btn-link">
+                <i class="fa  fa-users"></i>
+                Liste des groupes
+            </a>
+        {% endif %}
+    </div>
+
+    <table class="table table-striped table-hover" id="myTable">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Login</th>
+            <th>Email</th>
+            <th>Groupes</th>
+            <th>Site</th>
+            <th>Etat</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+            <tr>
+                <td>{{ u.name }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                    {% for g in u.groups %}
+                        {{ g.name }}<br>
+                    {% endfor %}
+                </td>
+                <td>{{ u.site }}</td>
+                <td>
+                    {% if u.isActive %}
+                        <i class="fa  fa-check"></i>
+                    {% endif %}
+                </td>
+                <td class="text-right">
+                    <a href="{{ path('user_edit', {'id': u.id}) }}" class="btn btn-link py-0">
+                        <i class="fa  fa-edit"></i>
+                        Modifier
+                    </a>
+                    <a href="{{ path('user_delete', {'id': u.id}) }}" class="btn btn-link py-0 text-danger">
+                        <i class="fa  fa-trash-alt text-danger"></i>
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="langue-id" data-value="{{ absolute_url(asset('DataTables/i18n/French.json')) }}"></div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            var langue = document.getElementById('langue-id').dataset.value;
+
+            $("#admin").addClass("active");
+            $("#user_index").addClass("active");
+
+            $('#myTable').DataTable({
+                order: [],
+                language: {url: langue},
+            });
+
+        });
+    </script>
+{% endblock %}

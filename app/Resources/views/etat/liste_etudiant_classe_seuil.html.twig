@@ -1,0 +1,81 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}Liste des étudiants{% endblock %}
+
+{% block body %}
+    {% if critere.typeSeuil=="pourcentage" %}
+    <h5>Liste des étudiants ayant payés un montant inférieur ou égal à <span class="text-danger">{{ critere.seuil }}% </span> de leur frais scolaire</h5>
+    {% else %}
+    <h5>Liste des étudiants ayant payés un montant inférieur ou égal à <span class="text-danger">{{ critere.montantSeuil|formatFr }}</span> FCFA</h5>
+    {% endif %}
+
+    <h6>
+        {% if critere.filiere %}
+        Filière :
+        <span class="value">{{ critere.filiere.code }}</span>
+        {% endif %}
+    </h6>
+    <h6>    
+
+        {% if critere.classe %}
+        Classe :
+        <span class="value">{{ critere.classe.code }}</span>
+        {% endif %}
+        
+        {% if critere.lettre %}
+            <span class="value">{{ critere.lettre }}</span>
+        {% endif %}
+    </h6>
+
+    <h6>
+        Année scolaire :
+        <span class="value">{{ critere.annee.nom }}</span>
+    </h6>
+
+    {% if critere.site %}
+        <h6>
+            Site :
+            <span class="value">{{ critere.site }}</span>
+        </h6>
+    {% endif %}
+
+    <h6>
+        Nombre :
+        <span class="value">{{ etdClasses | length }}</span>
+    </h6>
+
+    <table class="table table-bordered table-striped table-sm" style="margin-top: 20px">
+
+        <thead class="bg-info text-white">
+       
+        <th style="width: 20%;">Prénom</th>
+        <th style="width: 20%;">Nom</th>
+        <th style="width: 15%;">Matricule</th>
+        <th style="width: 12%;">Classe</th>
+        <th style="width: 10%;">Montant dû</th>
+        <th style="width: 13%;">Montant payé</th>
+        <th style="width: 10%;">Reste</th>
+    </thead>
+
+    <tbody class="value">
+
+        {% for ec in etdClasses %}
+            {# {% if(ec.paiementsTotal < (ec.montant * critere.seuil)/100 ) %} #}
+            <tr>
+                <td>{{ ec.prenom }}</td>
+                <td>{{ ec.nom }}</td>
+                <td>{{ ec.matricule }}</td>
+                <td>{{ ec.classe }}</td>
+                <td class="text-right">{{ ec.montant|formatFr }}</td>
+                <td class="text-right">{{ ec.payer|formatFr }}</td>
+                <td class="text-right">{{ ec.reste|formatFr }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Pas de résultat</td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endblock %}

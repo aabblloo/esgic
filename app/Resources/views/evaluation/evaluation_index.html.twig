@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}Liste Evaluations{% endblock %}
+
+{% block titre %}Liste des Evaluations{% endblock %}
+
+{% block body %}
+
+    <div class="breadcrumb">
+        <a class="btn btn-link" href="{{ path('evaluation_new') }}">
+            <i class="fa  fa-calculator"></i>
+            Enregistrer une évaluation
+        </a>
+    </div>
+
+    <div style="margin: 10px;">
+        {{ form_start(form) }}
+        <div class="row justify-content-center">
+            <div class="col-1">Filtrer par</div>
+
+            <div class="col-2">
+                {{ form_widget(form.annee) }}
+                {{ form_errors(form.annee) }}
+            </div>
+
+            <div class="col-2">
+                {{ form_widget(form.classe) }}
+                {{ form_errors(form.classe) }}
+            </div>
+
+            <div class="col-2">
+                {{ form_widget(form.site) }}
+                {{ form_errors(form.site) }}
+            </div>
+
+            <div class="col-1">
+                <button class="btn  btn-success">OK</button>
+            </div>
+
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+    <table class="table table-striped table-hover" id="myTable">
+        <thead>
+        <tr>
+            <th>Année scolaire</th>
+            <th>Evaluation</th>
+            <th>Classe</th>
+            <th>Matière</th>
+            <th>Site</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for evaluation in evaluations %}
+            <tr>
+                <td>{{ evaluation.anScolaire.nom }}</td>
+                <td>{{ evaluation.periode.nom }}</td>
+                <td>{{ evaluation.classe.code }}</td>
+                <td>{{ evaluation.matiere.code }}</td>
+                <td>{{ evaluation.site }}</td>
+                <td class="text-right">
+                    <a href="{{ path('evaluation_show', {'id': evaluation.id}) }}" class="btn btn-link py-0">
+                        <i class="fa  fa-file"></i>
+                        Afficher
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+    <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $("#gestion_bulletin").addClass("active");
+            $("#evaluation_index").addClass("active");
+
+            $(".chosen-select").chosen(
+                {
+                    allow_single_deselect: true,
+                    no_results_text: "Option non trouvée !",
+                    //width: "100%",
+                }
+            );
+
+            $('#myTable').DataTable({
+                order: [],
+            });
+
+        });
+    </script>
+{% endblock %}

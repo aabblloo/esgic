@@ -1,0 +1,204 @@
+{% extends 'base.html.twig' %}
+
+
+
+
+{% block body %}
+  <!-- CSS pour l'impression -->
+  <style>
+  /* Dans votre fichier CSS */
+  
+  .planning-item {
+      /* Styles de base pour toutes les entrées */
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+  }
+  
+  .emploi-examen {
+      /* Styles spécifiques pour les examens */
+      background-color: #ffcccc; /* Fond rouge clair */
+      border: 1px solid #cc0000; /* Bordure rouge */
+      color: #333; 
+      font-weight: bold; /* Mettre en gras pour l'emphase */
+  }
+  </style>
+    
+
+    <div class="container">
+                <div class="timetable-img text-center">
+                    <p>Année Scolaire: <b>{{anScolaire.nom}}</b>           Classe: <b>{{classe.code}}</b>  Semaine: <b>{{semaine}}</b></p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center table-striped">
+                        <thead>
+                            <tr class="bg-light-gray">
+                                <th class="text-uppercase">Lundi</th>
+                                <th class="text-uppercase">Mardi</th>
+                                <th class="text-uppercase">Mercredi</th>
+                                <th class="text-uppercase">Jeudi</th>
+                                <th class="text-uppercase">Vendredi</th>
+                                <th class="text-uppercase">Samedi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for emploiTime, emplois in groupedEmploi %}
+                            <tr>
+                                {% for jour in ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam'] %}
+                                    <td>
+                                    {% for emploi in emplois %}
+                                        {% if emploi.jour == jour %}
+                                            {# 1. Définir une variable de classe conditionnelle #}
+                                            {% set class_exam = '' %}
+                                            {% if emploi.exam == 1 %}
+                                                {% set class_exam = 'emploi-examen' %} {# Utilisez la classe CSS que vous allez définir #}
+                                            {% endif %}
+                                            <div class=" planning-item {{ class_exam }}">
+                                            <div class="font-size13 text-light-gray"><b>{{ emploi.matiere.code }}</b></div>
+                                            <div class="margin-10px-top font-size14">{{ emploi.debut|date('H:i') }} - {{ emploi.fin|date('H:i') }}</div>
+                                            <div class="font-size13 text-light-gray">{{ emploi.prof.prenom }} {{ emploi.prof.nom }}</div>
+                                            </div>
+                                        {% else %}
+                                            <!-- Empty cell if no emploi for the day -->
+                                        {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}" media="all">
+
+    <style>
+        /* Général - Table */
+        .table-bordered {
+            border: 1px solid #dee2e6; /* Bordure générale */
+            border-collapse: collapse; /* Supprime les doubles bordures */
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6; /* Bordures des cellules */
+            padding: 8px; /* Espacement interne */
+            text-align: center; /* Texte centré */
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9; /* Couleur des lignes impaires */
+        }
+
+        .table-striped tbody tr:nth-of-type(even) {
+            background-color: #ffffff; /* Couleur des lignes paires */
+        }
+
+        /* Impression - Paysage */
+        @media print {
+            @page {
+                size: A4 landscape; /* Orientation paysage */
+                /*margin: 1cm;  Marges */
+            }
+
+            body {
+                -webkit-print-color-adjust: exact; /* Couleurs à l'impression */
+                color-adjust: exact;
+            }
+
+            .table-bordered {
+                border: 1px solid black; /* Bordure à l'impression */
+            }
+
+            .table-bordered th,
+            .table-bordered td {
+                border: 1px solid black; /* Bordures des cellules */
+                padding: 10px; /* Ajustement de l'espacement */
+            }
+
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: #f9f9f9 !important; /* Couleur des lignes impaires */
+            }
+
+            .table-striped tbody tr:nth-of-type(even) {
+                background-color: #ffffff !important; /* Couleur des lignes paires */
+            }
+
+            /* Masquer les éléments inutiles à l'impression */
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{# {% block stylesheets %}
+    <link rel="stylesheet" type="text/css"
+          href="{{ asset('chosen/chosen.min.css') }}" media="all">
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}" media="all">
+
+     <style>
+        /* General Table Styles */
+        .table-bordered {
+            border: 1px solid #dee2e6; /* Border around the table */
+            border-collapse: collapse; /* Prevent double borders */
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6; /* Borders for cells */
+            padding: 8px; /* Internal spacing */
+            text-align: center; /* Center text */
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9; /* Odd row background color */
+        }
+
+        .table-striped tbody tr:nth-of-type(even) {
+            background-color: #ffffff; /* Even row background color */
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact; /* Maintain colors during print */
+                color-adjust: exact;
+            }
+
+            .table-bordered {
+                border: 1px solid black; /* Border for print */
+            }
+
+            .table-bordered th,
+            .table-bordered td {
+                border: 1px solid black; /* Borders for cells in print */
+                padding: 10px; /* Adjust padding for better readability */
+            }
+
+            .table-striped tbody tr:nth-of-type(odd) {
+                background-color: #f9f9f9 !important; /* Odd row background color for print */
+            }
+
+            .table-striped tbody tr:nth-of-type(even) {
+                background-color: #ffffff !important; /* Even row background color for print */
+            }
+
+            /* Hide any non-essential elements */
+            .no-print {
+                display: none !important; /* Hide elements with class 'no-print' */
+            }
+        }
+    </style>
+{% endblock %} #}
+
+{% block javascripts %}
+
+{% endblock %}

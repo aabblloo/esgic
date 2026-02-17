@@ -1,0 +1,330 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ titre }}
+{% endblock %}
+
+{% block titre %}
+{{ titre }}
+{% endblock %}
+
+{% block body %}
+{% if is_granted('ROLE_SCOLARITE') %}
+<div class="breadcrumb">
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('etd_paie_index', {'id': etudiant.id}) }}">
+            <i class="fa  fa-money-cash"></i>
+            Paiements
+        </a>
+    </li>
+</div>
+{% endif %}
+
+{% if not is_granted('ROLE_SCOLARITE') %}
+<div class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('etudiant_edit', {'id': etudiant.id}) }}">
+            <i class="fa  fa-edit"></i>
+            Modifier
+        </a>
+    </li>
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0 text-danger" href="{{ path('etudiant_delete', {'id': etudiant.id}) }}">
+            <i class="fa  fa-trash-alt"></i>
+            Supprimer
+        </a>
+    </li>
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('etudiant_classe_new', {'id': etudiant.id}) }}">
+            <i class="fa  fa-chalkboard-teacher"></i>
+            Saisie des classes
+        </a>
+    </li>
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('etd_paie_index', {'id': etudiant.id}) }}">
+            <i class="fa  fa-money-cash"></i>
+            Paiements
+        </a>
+    </li>
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('dossier_new',{'id': etudiant.id, 'type': 'e'}) }}">
+            <i class="fa  fa-folder-open"></i>
+            Saisie des dossiers
+        </a>
+    </li>
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('bulletin_index', {'id': etudiant.id}) }}" target="_blank">
+            <i class="fa  fa-file-excel"></i>
+            Bulletins
+        </a>
+    </li>
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('suivi_new', {'id': etudiant.id}) }}">
+            <i class="fa  fa-comment-alt"></i>
+            Suivi
+        </a>
+    </li>
+    
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0" href="{{ path('carte_etudiant_index', {'id': etudiant.id}) }}" target="_blank">
+            <i class="fa  fa-camera"></i>
+            Carte Edudiant
+        </a>
+    </li>
+    
+</div>
+{% endif %}
+
+
+<div class="row">
+    <div class="col-4">
+        <table class="table table-borderless table-hover table-sm">
+            <tbody>
+                <tr>
+                    <td style="width: 40%"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Matricule</td>
+                    <td class="value">{{ etudiant.matricule }}</td>
+                </tr>
+                <tr>
+                    <td>Prénom</td>
+                    <td class="value">{{ etudiant.prenom }}</td>
+                </tr>
+                <tr>
+                    <td>Nom</td>
+                    <td class="value">{{ etudiant.nom }}</td>
+                </tr>
+                <tr>
+                    <td>Sexe</td>
+                    <td class="value">{{ etudiant.sexe }}</td>
+                </tr>
+                <tr>
+                    <td>Date naiss.</td>
+                    <td class="value">{{ etudiant.dateNaiss | dateFr }}</td>
+                </tr>
+                <tr>
+                    <td>Lieu naiss.</td>
+                    <td class="value">{{ etudiant.lieuNaiss }}</td>
+                </tr>
+                <tr>
+                    <td>Quartier</td>
+                    <td class="value">{{ etudiant.quartier }}</td>
+                </tr>
+                <tr>
+                    <td>Téléphone</td>
+                    <td class="value">{{ etudiant.telephone }}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td class="value">{{ etudiant.email }}</td>
+                </tr>
+                <tr>
+                    <td>Professeur parrain</td>
+                    <td class="value">
+                        {% if etudiant.professeur is not null %}
+                        <a href="{{ path('prof_show', {'id': etudiant.professeur.id }) }}">
+                            {{ etudiant.professeur.prenomNom }}
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="col-4">
+        <table class="table table-borderless table-hover table-sm">
+            <tbody>
+                <tr>
+                    <td style="width: 40%"></td>
+                    <td class="value"></td>
+                </tr>
+                <tr>
+                    <td>Contact Parent</td>
+                    <td class="value">{{ etudiant.contactParent }}</td>
+                </tr>
+                <tr>
+                    <td>Email Parent</td>
+                    <td class="value">{{ etudiant.emailParent }}</td>
+                </tr>
+                <tr>
+                    <td>Année DEF</td>
+                    <td class="value">{{ etudiant.anneeDef }}</td>
+                </tr>
+                <tr>
+                    <td>Année BAC</td>
+                    <td class="value">{{ etudiant.anneeBac }}</td>
+                </tr>
+                <tr>
+                    <td>Cycle</td>
+                    <td class="value">{{ etudiant.cycle.code }}</td>
+                </tr>
+                <tr>
+                    <td>Classe courante</td>
+                    <td class="value">{{ etudiant.lastClasse }}</td>
+                </tr>
+                <tr>
+                    <td>Etat</td>
+                    <td class="value">{{ etudiant.etat }}</td>
+                </tr>
+                <tr>
+                    <td>Mot de passe</td>
+                    <td class="value">{{ etudiant.passwordText }}</td>
+                </tr>
+                <tr>
+                    <td>Accès au cours</td>
+                    <td class="value">
+                        {{ etudiant.isAccesCours ? 'Oui':'Non' }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Site</td>
+                    <td class="value">
+                        {{ etudiant.site }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="col-3">
+        <div style="height: 400px; overflow: hidden;">
+            <img class="card-img-top img-thumbnail"
+            src="{{ asset('images/etudiants/'~etudiant.photoDefault) }}" alt="{{ etudiant.prenomNom }}">
+        </div>
+        {% if not is_granted('ROLE_SCOLARITE') %}
+        <div class="text-center">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-link" data-toggle="modal" data-target="#exampleModal">
+                Changer la photo
+            </button>
+        </div>
+        {% endif %}
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <table class="table table-bordered table-sm table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Années scolaires</th>
+                    <th>Classe</th>
+                    <th>Montant</th>
+                    <th>Payé</th>
+                    <th>Reste</th>
+                </tr>
+            </thead>
+            <tbody class="value">
+                {% for paie in paiements %}
+                <tr>
+                    <td>{{ paie.annee }}</td>
+                    <td>{{ paie.classe }}</td>
+                    <td style="text-align: right; word-wrap: normal;">{{ paie.montant | formatFr }}</td>
+                    <td style="text-align: right; word-wrap: normal;">{{ paie.payer | formatFr }}</td>
+                    <td style="text-align: right; word-wrap: normal;">
+                        {{ (paie.montant - paie.payer) | formatFr }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h5>Autres paiements</h5>
+        <table class="table table-sm table-bordered table-striped table-hover" id="myTable">
+            <thead>
+                <tr>
+                    <th>Année</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                    <th>Mode</th>
+                    <th>Réf.</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody class="value">
+                {% for autrePaiement in autre_paiements %}
+                <tr>
+                    <td>{{ autrePaiement.anScolaire.nom }}</td>
+                    <td>{{ autrePaiement.montant|formatFr }}</td>
+                    <td>{{ autrePaiement.date|dateFr }}</td>
+                    <td>{{ autrePaiement.banque ? autrePaiement.banque.nom }}</td>
+                    <td>{{ autrePaiement.modeOperation }}</td>
+                    <td>{{ autrePaiement.type }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+    
+    <div class="col-6">
+        <table class="table table-bordered table-striped table-hover table-sm">
+            <thead>
+                <tr>
+                    <th>Dossiers</th>
+                </tr>
+            </thead>
+            <tbody class="value">
+                {% for doss in dossiers %}
+                <tr>
+                    <td>
+                        <a href="{{ asset('documents/'~doss.lien) }}" title="Afficher" target="_blank">
+                            {{ doss.nom }}
+                        </a>
+                    </td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Nouvelle Photo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn btn-primary btn-sm">
+                <i class="fa fa-save"></i>
+                Enregistrer
+            </button>
+            {{ form_end(form) }}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(function () {
+        var attr = $("#gestion_scolaire").attr("class");
+        $("#gestion_scolaire").attr("class", attr + " active");
+        attr = $("#etudiant_index").attr("class");
+        $("#etudiant_index").attr("class", attr + " active");
+    });
+</script>
+{% endblock %}

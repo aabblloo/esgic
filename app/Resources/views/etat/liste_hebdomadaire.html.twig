@@ -1,0 +1,154 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}
+	{{ titre }}
+
+{% endblock %}
+
+
+
+{% block body %}
+<style>
+th, td {
+    white-space: nowrap; /* les heures restent sur 1 seule ligne */
+}
+@media print {
+    @page {
+        size: landscape;
+        margin: 8mm;
+
+
+		@bottom-left {
+        	content: "Classe : {{ classe.code }}{% if lettre %} {{ lettre }}{% endif %} {{anScolaire.nom}}";
+        	font-size: 11px;
+			margin-left:14mm;
+    	}
+
+		@bottom-center {
+			content: "Site : {{ site }}";
+			font-size: 11px;
+		}
+
+		@bottom-right {
+			content: "Page " counter(page) " / " counter(pages);
+			font-size: 11px;
+			margin-right:13mm;
+		}
+    }
+
+    body {
+        font-size: 13px;
+
+    }
+
+
+	
+
+}
+</style>
+
+{% if periode == 'jour' %}
+<style>
+@media print {
+    table {
+        transform: scale(0.85);
+        transform-origin: top left;
+    }
+}
+</style>
+{% else %}
+<style>
+@media print {
+    table {
+        transform: scale(1); /* utilise toute la largeur */
+        transform-origin: top left;
+    }
+}
+</style>
+{% endif %}
+	<h5>Liste Hebdomadaire</h5>
+
+	<h6>
+		Classe :
+		<span class="value">{{ classe.code }}</span>
+		{% if lettre %}
+			<span class="value">{{ lettre }}</span>
+		{% endif %}
+	</h6>
+
+	<h6>
+		Année scolaire :
+		<span class="value">{{ anScolaire.nom }}</span>
+	</h6>
+
+	{% if site %}
+		<h6>
+			Site :
+			<span class="value">{{ site }}</span>
+		</h6>
+	{% endif %}
+
+	<h6>
+		Nombre :
+		<span class="value">{{ etudiants | length }}</span>
+	</h6>
+	<h6>
+		Période :
+		<span class="value">{{ periode=='jour'?'Jour':'Soir'}}</span>
+	</h6>
+
+	<table class="table table-bordered table-striped table-sm" style="margin-top: 20px">
+
+		<thead class="bg-info text-white">
+		<tr>
+			
+			<th rowspan="2" style="width: 20%">Prénom</th>
+			<th rowspan="2" style="width: 20%">Nom</th>
+			<th rowspan="2" style="width: 15%">Matricule</th>
+			{% set colSpan = periode == 'jour' ? 3 : 2 %}
+			{% for date in dates %}
+			<th colspan="{{ colSpan }}">{{ date|date('d/m/Y') }}</th>
+			{% endfor %}
+			<th rowspan="2" style="width: 15%">T. AB</th>
+		</tr>
+		<tr>
+			{% for i in 1..5 %}
+				{% if periode == 'jour' %}
+					<th style="font-size: 11px">08h-10h</th>
+					<th style="font-size: 11px">10h-12h</th>
+					<th style="font-size: 11px">12h-14h</th>
+				{% elseif periode == 'soir' %}
+					<th style="font-size: 11px">17h-19h</th>
+					<th style="font-size: 11px">19h-21h</th>
+				{% endif %}
+			{% endfor %}
+			{# Subcolumns for each date #}
+			
+		</tr>
+		</thead>
+
+		<tbody class="value">
+
+			{% set nbCols = periode == 'jour' ? 3*5 : 2*5 %}
+			{% for etd in etudiants %}
+				<tr>
+					<td>{{ etd.prenom }}</td>
+					<td>{{ etd.nom }}</td>
+					<td>{{ etd.matricule }}</td>
+					{% for i in 1..nbCols %}
+						<td></td>
+					{% endfor %}
+					<td></td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="19">Pas de résultat</td>
+				</tr>
+			{% endfor %}
+
+			
+
+		</tbody>
+		
+	</table>
+{% endblock %}

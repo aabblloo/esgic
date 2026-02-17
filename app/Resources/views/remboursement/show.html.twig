@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Remboursement</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ remboursement.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if remboursement.date %}{{ remboursement.date|date('Y-m-d') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td>{{ remboursement.montant }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('remboursement_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('remboursement_edit', { 'id': remboursement.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

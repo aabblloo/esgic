@@ -1,0 +1,248 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}
+{{ titre }}
+{% endblock %}
+
+{% block titre %}
+{{ titre }}
+{% endblock %}
+
+{% block body %}
+
+<div class="breadcrumb">
+    <a href="{{ path('emploi_du_temps_new') }}" class="btn btn-link">
+        <i class="fa  fa-chalkboard-teacher"></i>
+        Enregistrer un emploi du temps
+    </a>
+</div>
+
+<div class="row align-items-center justify-content-center"
+style="margin-bottom: 20px">
+<div class="col-12">
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">An scolaire</span>
+                </div>
+                {{ form_widget(form.anSco) }}
+            </div>
+        </div>
+        
+        <div class="col-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">Professeur</span>
+                </div>
+                {{ form_widget(form.prof) }}
+            </div>
+        </div>
+        
+        <div class="col-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">Site</span>
+                </div>
+                {{ form_widget(form.site) }}
+            </div>
+        </div>
+        
+        <div class="col-3">
+        <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">classe</span>
+                </div>
+                {{ form_widget(form.classe) }}
+            </div>
+        </div>
+        
+         <div class="col-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">Semaine</span>
+                </div>
+                {{ form_widget(form.semaine) }}
+            </div>
+        </div> 
+        
+        <div class="col-1">
+            <button class="btn btn-success btn-block">OK</button>
+        </div>
+        
+    </div>
+    {{ form_end(form) }}
+</div>
+</div>
+
+<table id="myTable" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Site</th>
+            <th>Classe</th>
+            <th>Annee</th>
+            <th>Semaine</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in emploi_tps %}
+        <tr >
+            <td>{{ e.site.nom }}</td>
+            <td>{{ e.classe.code }}</td>
+            <td>{{ e.anScolaire.nom }}</td>
+            <td>{{ e.getLibelleSemaine }}</td>
+            <td class="text-right">
+                <a href="{{ path('reconduire_emploi',{'id':e.id}) }}" class="btn btn-link py-0 text-warning reconduire" >
+                    <i class="fa  fa-copy"></i>
+                    Reconduire
+                </a>
+                <a href="{{ path('imprimer_emploi',{'id':e.id}) }}" class="btn btn-link py-0 text-success" target="_blank" >
+                    <i class="fa  fa-calendar-alt"></i>
+                    Imprimer
+                </a>
+                <a href="{{ path('emploi_du_temps_edit', {'site': e.site.id,'anSco':e.anScolaire.id,'classe':e.classe.id, 'semaine':e.semaine}) }}" class="btn btn-link py-0">
+                    <i class="fa  fa-edit"></i>
+                    Modifier
+                </a>
+                <a href="{{ path('emploi_du_temps_delete_all', {'site': e.site.id,'anSco':e.anScolaire.id,'classe':e.classe.id, 'semaine':e.semaine}) }}" class="btn btn-link py-0 text-danger" onclick="return confirm('Etes-vous sur de vouloir supprimer?')">
+                    <i class="fa  fa-trash-alt "></i>
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<!-- Modal Reconduction -->
+<div id="modal-reconduire" 
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:#fff; padding:20px; border-radius:8px; width:400px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+        <h5 style="margin-bottom:15px;">Reconduire l’emploi du temps</h5>
+        <div class="row">
+            <div class='col-sm-6'>
+                <label for=""> A partir de</label>
+                <input type="date" id="aPartirDeInput" class="form-control"
+                    style=" padding:6px; margin-bottom:15px;">
+            </div>
+            <div class='col-sm-6'>
+                <label for="">Nombre de semaine</label>
+                <input type="number" id="nbSemainesInput" class="form-control" min="1" max="52" value="1"
+                    style=" padding:6px; margin-bottom:15px;">
+            </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+            <button id="annulerModal" class="btn btn-secondary">Annuler</button>
+            <button id="validerModal" class="btn btn-success">Valider</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}">
+<link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+<script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+<script>
+$(document).ready(function () {
+
+    let idEmploi = null; // stocke l'id temporairement
+    // Lorsqu'on clique sur "Reconduire"
+    $('.reconduire').on('click', function (e) {
+        e.preventDefault();
+        idEmploi = $(this).attr('href').split('/').pop(); // extrait l'id du lien
+        $('#modal-reconduire').css('display', 'flex');
+    });
+
+    // Bouton Annuler
+    $('#annulerModal').on('click', function () {
+        $('#modal-reconduire').hide();
+        idEmploi = null;
+    });
+
+    // Bouton Valider
+    $('#validerModal').on('click', function () {
+        const nbSemaines = parseInt($('#nbSemainesInput').val());
+        const aPartirDe = $('#aPartirDeInput').val()
+        if (!nbSemaines || nbSemaines < 1) {
+            alert('Veuillez saisir un nombre de semaines valide.');
+            return;
+        }
+        console.log(aPartirDe);
+        // Redirection vers la route Symfony avec le paramètre
+        window.location.href = `/emploidutemps/reconduire/${idEmploi}?nbSemaines=${nbSemaines}&aPartirDe=${aPartirDe}`;
+    });
+})
+</script>
+
+<script>
+    $(function () {
+        $("#autre").addClass("active");
+        $("#emploi_du_temps").addClass("active");
+        
+        $(".chosen-select").chosen({
+            allow_single_deselect: true,
+            no_results_text: "Option non trouvée !",
+            disable_search_threshold: 10,
+            //width: "74%",
+            inherit_select_classes: true
+        });
+        
+        $('#myTable').DataTable({
+            order: [],
+        });
+        
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var table = $('#myTable').DataTable();
+        $('#export').on('click', function() {
+            var data = table.rows().data().toArray();
+            data = data.map(function(row) {
+                row.pop();
+                return row;
+            });
+            // Get the headers
+            var headers = [];
+            $('#myTable thead th').each(function() {
+                headers.push($(this).text());
+            });
+            
+            // Remove the last header
+            headers.pop();
+            
+            // Prepend headers to the data array
+            data.unshift(headers);
+            $.ajax({
+                url: '/cours/export',
+                method: 'POST',
+                data: { data: JSON.stringify(data) },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(data) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'cours.xlsx';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url); 
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

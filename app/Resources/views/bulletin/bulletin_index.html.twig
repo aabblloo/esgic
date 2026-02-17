@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Liste des Bulletins{% endblock %}
+
+{% block titre %}Liste des Bulletins{% endblock %}
+
+{% block body %}
+    <h5>Etudiant : <span class="value font-weight-bold">{{ etudiant.prenomNom }}</span></h5>
+
+    <table class="table table-bordered table-striped table-sm" style="margin-top: 20px">
+
+        <thead class="bg-info text-white">
+            <tr>
+                <th>Année</th>
+                <th>Classe</th>
+                <th>Période</th>
+            </tr>
+        </thead>
+
+        <tbody class="value">
+            {% for b in bulletins %}
+                <tr>
+                    <td>{{ b.annee }}</td>
+                    <td>{{ b.classe }}</td>
+                    <td>
+                        {% set link = {'eid':etudiant.id, 'aid':b.aid, 'cid':b.cid, 'pid':b.pid} %}
+                        <a href="{{ path('bulletin_show', link) }}" target="_blank">
+                            {{ b.periode }}
+                        </a>                        
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

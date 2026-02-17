@@ -1,0 +1,378 @@
+<div class="container-fluid_">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="{{ path('homepage') }}">{{ app_name }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item" id="home">
+                    <a class="nav-link" href="{{ path('homepage') }}">
+                        <i class="fa  fa-home"></i>
+                        Accueil
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+
+                {% if is_granted('ROLE_COMMUNICATION') %}
+                    <li class="nav-item" id="parent_index">
+                        <a class="nav-link" href="{{ path('parents_index') }}">
+                            <i class=""></i>
+                            Parent d'étudiants
+                        </a>
+                    </li>
+                {% endif %}
+
+                <!-- administration -->
+                {% if is_granted('ROLE_RESPONSABLE') or is_granted('ROLE_RESP_PEDAGOGIE') %}
+                    <li class="nav-item dropdown" id="admin">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa  fa-toolbox"></i>
+                            Administration
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if is_granted('ROLE_RESPONSABLE') or is_granted('ROLE_RESP_PEDAGOGIE') %}
+                                {% if is_granted('ROLE_RESPONSABLE') %}
+                                    <a class="dropdown-item" href="{{ path('banque_index') }}" id="banque_index">
+                                        <i class="fa  fa-building"></i>
+                                        Banque
+                                    </a>
+                                {% endif %}
+
+                                <a class="dropdown-item" href="{{ path('classe_index') }}" id="classe_index">
+                                    <i class="fa  fa-chalkboard-teacher"></i>
+                                    Classe
+                                </a>
+
+                                {% if is_granted('ROLE_RESPONSABLE') %}
+                                    <a class="dropdown-item" href="{{ path('matiere_index') }}" id="matiere_index">
+                                        <i class="fa  fa-superscript"></i>
+                                        Matière
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ path('an_scolaire_index') }}" id="an_scolaire_index">
+                                        <i class="fa  fa-calendar-alt"></i>
+                                        Année académique
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ path('cycle_index') }}" id="cycle_index">
+                                        <i class="fa  fa-recycle"></i>
+                                        Cycle
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ path('filiere_index') }}" id="filiere_index">
+                                        <i class="fa  fa-recycle"></i>
+                                        Filière
+                                    </a>
+
+                                    <a class="dropdown-item" href="{{ path('site_index') }}" id="site_index">
+                                        <i class="fa  fa-school"></i>
+                                        Site
+                                    </a>
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ path('carte_etudiant_liste') }}" id="carte_scolaire">
+                                        <i class="fa "></i>
+                                        Carte d'identité académique
+                                    </a>
+
+                                {% endif %}
+                            {% endif %}
+
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('parents_index') }}" id="parent_index">
+                                <i class="fa "></i>
+                                Parent d'étudiants
+                            </a>
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('user_index') }}" id="user_index">
+                                    <i class="fa  fa-user"></i>
+                                    Utilisateur
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('parametres_index') }}" id="param_index">
+                                    <i class="fas fa-toolbox"></i>
+                                    Paramètres
+                                </a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_DIRECTEUR') %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('logs_index') }}" id="log_index">
+                                    <i class="fas fa-toolbox"></i>
+                                    Afficher les logs
+                                </a>
+                            {% endif %}
+
+                        </div>
+                    </li>
+                {% endif %}
+
+                <!-- gestion scolaire -->
+                {% if is_granted('ROLE_RESPONSABLE') or is_granted('ROLE_SAISIE') or is_granted('ROLE_COMMUNICATION')  %}
+                    <li class="nav-item dropdown" id="gestion_scolaire">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa  fa-book-open"></i>
+                            Gestion académique
+                        </a>
+
+                        <div
+                            class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                            <!-- étudiants -->
+                            <a class="dropdown-item" href="{{ path('etudiant_search') }}" id="etudiant_search">
+                                <i class="fa  fa-search"></i>
+                                Rechercher Etudiant(e)
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('etudiant_index') }}" id="etudiant_index">
+                                <i class="fa  fa-list-alt"></i>
+                                Liste des Etudiant(es)
+                            </a>
+
+                            {% if is_granted('ROLE_RESPONSABLE') or is_granted('ROLE_SAISIE')  %}
+                                <a class="dropdown-item" href="{{ path('etudiant_new') }}" id="etudiant_new">
+                                    <i class="fa  fa-user-graduate"></i>
+                                    Inscription Etudiant(e)
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+                                
+                                <!-- paiements -->
+                                {% if is_granted('ROLE_SCOLARITE') or is_granted('ROLE_DIRECTEUR') %}
+                                <a class="dropdown-item" href="{{ path('paiement_index') }}" id="paiement_index">
+                                    <i class="fa  fa-money-bill-alt"></i>
+                                    Liste des paiements
+                                </a>
+
+                                <a class="dropdown-item" href="{{ path('paiement_new') }}" id="paiement_new">
+                                    <i class="fa  fa-money-bill-alt"></i>
+                                    Enregistrer un paiement
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+
+                                <a class="dropdown-item" href="{{ path('autrepaiement_index') }}" id="autre_paiement_index">
+                                    <i class="fa  fa-money-bill-alt"></i>
+                                    Autres paiements
+                                </a>
+                                {% endif %}
+
+                                <div class="dropdown-divider"></div>
+
+                                <!-- suivis -->
+                                <a class="dropdown-item" href="{{ path('suivi_index') }}" id="suivi_index">
+                                    <i class="fa  fa-comment-alt"></i>
+                                    Liste des suivis
+                                </a>
+
+                                <a class="dropdown-item" href="{{ path('suivi_new') }}" id="suivi_new">
+                                    <i class="fa  fa-comment-alt"></i>
+                                    Enregistrer un suivi
+                                </a>
+
+                                <div class="dropdown-divider"></div>
+
+                                <!-- états -->
+                                <a class="dropdown-item" href="{{ path('gs_etat') }}" id="gs_etat_index">
+                                    <i class="fa  fa-print"></i>
+                                    Etats
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+                    </li>
+                {% endif %}
+
+                <!-- gestion scolarite -->
+                {% if is_granted('ROLE_SCOLARITE')  %}
+                    <li class="nav-item dropdown" id="gestion_scolaire">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa  fa-book-open"></i>
+                            Gestion académique
+                        </a>
+
+                        <div
+                            class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                            <!-- étudiants -->
+                            <a class="dropdown-item" href="{{ path('etudiant_search') }}" id="etudiant_search">
+                                <i class="fa  fa-search"></i>
+                                Rechercher Etudiant(e)
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('etudiant_index') }}" id="etudiant_index">
+                                <i class="fa  fa-list-alt"></i>
+                                Liste des Etudiant(es)
+                            </a>
+
+                            <!-- paiements -->
+                            <a class="dropdown-item" href="{{ path('paiement_index') }}" id="paiement_index">
+                                <i class="fa  fa-money-bill-alt"></i>
+                                Liste des paiements
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('paiement_new') }}" id="paiement_new">
+                                <i class="fa  fa-money-bill-alt"></i>
+                                Enregistrer un paiement
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item" href="{{ path('autrepaiement_index') }}" id="autre_paiement_index">
+                                <i class="fa  fa-money-bill-alt"></i>
+                                Autres paiements
+                            </a>
+                            <a class="dropdown-item" href="{{ path('gs_etat') }}" id="gs_etat_index">
+                                <i class="fa  fa-print"></i>
+                                Etats
+                            </a>
+                        </div>
+                    </li>
+                {% endif %}
+
+                <!-- gestion bulletins -->
+                {% if is_granted('ROLE_RESPONSABLE') %}
+                    <li class="nav-item dropdown" id="gestion_bulletin">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa  fa-barcode"></i>
+                            Gestion des bulletins
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ path('evaluation_index') }}" id="evaluation_index">
+                                <i class="fa fa-calculator "></i>
+                                Liste des évaluations
+                            </a>
+                            <a class="dropdown-item" href="{{ path('evaluation_new') }}" id="evaluation_new">
+                                <i class="fa fa-calculator "></i>
+                                Enregistrer une évaluation
+                            </a>
+
+                        </div>
+                    </li>
+                {% endif %}
+
+                <!-- autres -->
+                {% if is_granted('ROLE_RESPONSABLE') or is_granted('ROLE_SAISIE') %}
+                    <li class="nav-item dropdown" id="autre">
+
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa  fa-bicycle"></i>
+                            Autres
+                        </a>
+
+                        <div
+                            class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                            <!-- dépenses -->
+                            <a class="dropdown-item" href="{{ path('depense_index') }}" id="depense_index">
+                                <i class="fa  fa-dollar-sign"></i>
+                                Liste des dépenses
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('depense_new') }}" id="depense_new">
+                                <i class="fa  fa-dollar-sign"></i>
+                                Enregistrer une dépense
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <!-- professeurs -->
+                            <a class="dropdown-item" href="{{ path('prof_index') }}" id="prof_index">
+                                <i class="fa  fa-user-astronaut"></i>
+                                Liste des professeurs
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('prof_new') }}" id="prof_new">
+                                <i class="fa  fa-user-astronaut"></i>
+                                Enregistrer un professeur
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('pret_index') }}" id="pret_index">
+                                <i class="fa  fa-user-astronaut"></i>
+                                Liste des prêts aux professeurs
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <!-- cours -->
+                            <a class="dropdown-item" href="{{ path('cours_index') }}" id="cours_index">
+                                <i class="fa  fa-chalkboard-teacher"></i>
+                                Liste des cours
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('cours_new') }}" id="cours_new">
+                                <i class="fa  fa-chalkboard-teacher"></i>
+                                Enregistrer un cours
+                            </a>
+                            <div class="dropdown-divider"></div>
+
+                            <!-- emploi du temps -->
+                            <a class="dropdown-item" href="{{ path('emploi_du_temps_index')}}" id="emploi_du_temps">
+                                <i class="fa  fa-calendar-alt"></i>
+                                Emploi du temps
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <!-- autres documents -->
+                            <a class="dropdown-item" href="{{ path('autre_doc_index') }}" id="autre_doc_index">
+                                <i class="fa  fa-file-pdf"></i>
+                                Liste des documents
+                            </a>
+
+                            <a class="dropdown-item" href="{{ path('autre_doc_new') }}" id="autre_doc_new">
+                                <i class="fa  fa-file-pdf"></i>
+                                Enregistrer un document
+                            </a>
+                        </div>
+                    </li>
+                {% endif %}
+
+                <!-- autres -->
+                {% if is_granted('ROLE_EMPLOI_DU_TEMPS')%}
+                    <li class="nav-item dropdown" id="autre">
+
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa  fa-bicycle"></i>
+                            Autres
+                        </a>
+
+                        <div
+                            class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <!-- emploi du temps -->
+                            <a class="dropdown-item" href="{{ path('emploi_du_temps_index')}}" id="emploi_du_temps">
+                                <i class="fa  fa-calendar-alt"></i>
+                                Emploi du temps
+                            </a>
+                        </div>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item dropdown" id="moi_index">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa  fa-user-circle"></i>
+                        {{ app.user.name }}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('user_change_pass') }}" id="change_password" target="_blank">
+                            Changer mot de passe
+                        </a>
+                        <a class="dropdown-item" href="{{ path('logout') }}">
+                            <i class="fa  fa-chevron-right"></i>
+                            Déconnexion
+                        </a>
+
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+</div>

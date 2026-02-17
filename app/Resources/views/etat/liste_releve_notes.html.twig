@@ -1,0 +1,190 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}
+	{{ titre }}
+
+{% endblock %}
+
+
+
+{% block body %}
+
+{% set dateImpression = "now"|date("d/m/Y") %}
+<style>
+th, td {
+    white-space: nowrap; /* les heures restent sur 1 seule ligne */
+}
+@media print {
+    @page {
+        size: landscape;
+        margin: 8mm;
+
+
+		@bottom-left {
+        	content: "Classe : {{ classe.code }}{% if lettre %} {{ lettre }}{% endif %} {{anScolaire.nom}}";
+        	font-size: 11px;
+			margin-left:14mm;
+    	}
+
+		@bottom-center {
+			content: "Site : {{ site }}";
+			font-size: 11px;
+		}
+
+		@bottom-right {
+			content: "Page " counter(page) " / " counter(pages);
+			font-size: 11px;
+			margin-right:13mm;
+		}
+    }
+
+    body {
+        font-size: 13px;
+    }
+
+}
+</style>
+
+<style>
+@media print {
+    table {
+        transform: scale(1); /* utilise toute la largeur */
+        transform-origin: top left;
+    }
+}
+</style>
+	<table class="table table-borderless">
+	
+	<p>
+	<h3 class="text-center"> <b>Relevé des notes</b> </h5>
+	
+	</p>
+	<tr>
+		<td>
+		<h6>
+			Classe :
+			<span class="value">{{ classe.code }}</span>
+			{% if lettre %}
+				<span class="value">{{ lettre }}</span>
+			{% endif %}
+		</h6>
+		</td>
+		<td>
+		<h6>
+			Année scolaire :
+			<span class="value">{{ anScolaire.nom }}</span>
+		</h6>
+		</td>
+		<td>
+		{% if site %}
+			<h6>
+				Site :
+				<span class="value">{{ site }}</span>
+			</h6>
+		{% endif %}
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+		<h6>
+			Epreuve :
+			<span class="value">{{epreuve.code}}</span>
+		</h6>
+		</td>
+		<td>
+		<h6>
+			Enseignant :
+			<span class="value">{{enseignant.prenomNom}}</span>
+		</h6>
+		</td>
+		<td>
+		<h6>
+			Semestre :
+			<span class="value">{{semestre}}</span>
+		</h6>
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+		<h6>
+			Nombre :
+			<span class="value">{{ etudiants | length }}</span>
+		</h6>
+		</td>
+		<td>
+		<h6>
+			Examen de fin de module 
+			{% if typeExamen=='exam_fin' %}
+			<span class="value">X</span>
+			{% endif %}
+		</h6>
+		</td>
+		<td>
+		<h6>
+			Rattrapage 
+			{% if typeExamen=='rattrapage' %}
+			<span class="value">X</span>
+			{% endif %}
+		</h6>
+		</td>
+	</tr>
+	</table>
+	
+
+	
+
+	
+
+
+	
+	
+	
+
+
+
+	<table class="table table-bordered table-striped table-sm" style="margin-top: 20px">
+
+		<thead class="bg-info text-white">
+		<tr>
+			
+			<th rowspan="2" style="width: 20%">Prénom</th>
+			<th rowspan="2" style="width: 20%">Nom</th>
+			<th rowspan="2" style="width: 15%">Matricule</th>
+			<th rowspan="2" style="width: 15%">Contrôle continue <br>Note/20</th>
+			<th rowspan="2" style="width: 15%">Examen/Rattrapage <br>Note/20</th>
+		</tr>
+		</thead>
+
+		<tbody class="value">
+			{% for etd in etudiants %}
+				<tr>
+					<td>{{ etd.prenom }}</td>
+					<td>{{ etd.nom }}</td>
+					<td>{{ etd.matricule }}</td>
+					<td></td>
+					<td></td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="19">Pas de résultat</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+<div class="last-page">
+    <div class="signature-footer">
+        <div class="signature-left">
+            Date : {{ dateImpression }}<br><br>
+            Signature de l'enseignant
+        </div>
+
+        <div class="signature-right text-right">
+            La Direction pédagogique
+        </div>
+    </div>
+</div>
+{% endblock %}

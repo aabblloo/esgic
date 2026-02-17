@@ -1,0 +1,12 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: zi1r3.myd.infomaniak.com
+    database_port: null
+    database_name: zi1r3_topschool
+    database_user: zi1r3_topschool
+    database_password: xwmZvervA3ws
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: ce0736f72c4f1092f7564d4b3f04ac6328ace782

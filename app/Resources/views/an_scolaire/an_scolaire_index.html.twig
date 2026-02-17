@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+    <div class="breadcrumb">
+        <a class="btn btn-link" href="{{ path('an_scolaire_new') }}">
+            <i class="fa  fa-calendar-alt"></i>
+            Ajouter une année académique
+        </a>
+    </div>
+
+    <table class="table table-bordered- table-striped table-hover" id="myTable">
+        <thead>
+        <tr>
+            <th class="text-center">Libellé</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for an_scolaire in an_scolaires %}
+            <tr>
+                <td class="text-center">{{ an_scolaire.nom }}</td>
+                <td class="text-right">
+                    <a href="{{ path('an_scolaire_edit', {'id': an_scolaire.id}) }}" class="btn btn-link py-0">
+                        <i class="fa  fa-edit"></i>
+                        Modifier
+                    </a>
+
+                    <a href="{{ path('an_scolaire_delete', {'id': an_scolaire.id}) }}"
+                       class="btn btn-link py-0 text-danger">
+                        <i class="fa  fa-trash-alt text-danger"></i>
+                        Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <caption>Pas d'enregistrement</caption>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $("#admin").addClass("active");
+            $("#an_scolaire_index").addClass("active");
+
+            $('#myTable').DataTable({
+                order: [],
+            });
+
+        });
+    </script>
+{% endblock %}

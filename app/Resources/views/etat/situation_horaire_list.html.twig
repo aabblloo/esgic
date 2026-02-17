@@ -1,0 +1,222 @@
+{% extends "base_print.html.twig" %}
+{% set titre = 'Situation mensuelle des heures executées' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+
+    <h4>
+        {{ titre }}
+    </h4>
+    <h6>
+        Année scolaire :
+        <span class="value font-weight-bold">
+            {{ anScolaire.nom }}
+        </span>
+    </h6>
+    {% if site is defined and site is not null %}
+        
+    <h6>
+        Site :
+        <span class="value font-weight-bold">
+            {{ site }}
+        </span>
+    </h6>
+    {% endif %}
+
+    <h6>
+        Mois :
+        <span class="value font-weight-bold">
+            {{ mois }} ({{periode}})
+        </span>
+    </h6>
+
+    <div class="row">
+    <div class="col-sm-9">
+     <table class="table table-bordered table-striped table-sm"
+           style="margin-top: 20px">
+
+        <thead class="bg-info text-white">
+        <tr>
+            <th rowspan="2">Cycle</th>
+            <th colspan="2">Semaine 1</th>
+            <th colspan="2">Semaine 2</th>
+            <th colspan="2">Semaine 3</th>
+            <th colspan="2">Semaine 4</th>
+            <th colspan="2">ECART</th>
+        </tr>
+        <tr>
+            <th>Prévu</th>
+            <th>Exécuté</th>
+            <th>Prévu</th>
+            <th>Exécuté</th>
+            <th>Prévu</th>
+            <th>Exécuté</th>
+            <th>Prévu</th>
+            <th>Exécuté</th>
+            <th>Heure</th>
+            <th>Montant</th>
+        </tr>
+        </thead>
+        {% set totalEcartHeure = 0 %}
+        {% set totalEcartMontant = 0 %}
+        {% for cycle in ['DUT', 'LICENCE', 'MASTER'] %}
+            {% set ecartHeure = 
+                (executes[cycle][1] ?? 0) + (executes[cycle][2] ?? 0) + (executes[cycle][3] ?? 0) + (executes[cycle][4] ?? 0)
+                - (prevues[cycle][1] ?? 0) - (prevues[cycle][2] ?? 0) - (prevues[cycle][3] ?? 0) - (prevues[cycle][4] ?? 0)
+            %}
+
+            {# Calcul du montant selon le cycle #}
+            {% if cycle in ['DUT', 'LICENCE'] %}
+                {% set ecartMontant = ecartHeure * 8000 %}
+            {% elseif cycle == 'MASTER' %}
+                {% set ecartMontant = ecartHeure * 10000 %}
+            {% else %}
+                {% set ecartMontant = 0 %}
+            {% endif %}
+            <tr>
+                <td>{{ cycle }}</td>
+                {% for i in 1..4 %}
+                    <td>{{ prevues[cycle][i] ?? 0 }}H</td>
+                    <td>{{ executes[cycle][i] ?? 0 }}H</td> {# À remplacer par les heures exécutées si tu as les données #}
+                {% endfor %}
+                <td>{{ ecartHeure }}H</td>
+                <td>{{ ecartMontant|number_format(0, ',', ' ') }} F CFA</td>
+            </tr>
+            {% set totalEcartHeure = totalEcartHeure + ecartHeure %}
+            {% set totalEcartMontant = totalEcartMontant + ecartMontant %}
+        {% endfor %}
+        {# <tbody class="value">
+        <tr>
+            <td>DUT</td>
+            <td>10H</td>
+            <td>10H</td>
+            <td>20H</td>
+            <td>20H</td>
+            <td>30H</td>
+            <td>40H</td>
+            <td>30H</td>
+            <td>40H</td>
+            <td>40H</td>
+        </tr>
+        <tr>
+            <td>LICENCE</td>
+            <td>10H</td>
+            <td>10H</td>
+            <td>20H</td>
+            <td>20H</td>
+            <td>30H</td>
+            <td>40H</td>
+            <td>30H</td>
+            <td>40H</td>
+            <td>40H</td>
+        </tr>
+        <tr>
+            <td>MASTER</td>
+            <td>10H</td>
+            <td>10H</td>
+            <td>20H</td>
+            <td>20H</td>
+            <td>30H</td>
+            <td>40H</td>
+            <td>30H</td>
+            <td>40H</td>
+            <td>40H</td>
+        </tr>
+        </tbody> #}
+
+        <tfoot>
+        <tr>
+            <th colspan="9">GRAND TOTAL</th>
+            <th>{{ totalEcartHeure }}H</th>
+            <th>{{ totalEcartMontant|number_format(0, ',', ' ') }} F CFA</th>
+        </tr>
+        </tfoot>
+
+        {# <tbody class="value">
+
+        {% for cr in cours %}
+            <tr>
+                <td>{{ cr.date|date('d/m/Y') }}</td>
+                <td>{{ cr.matiere }}</td>
+                <td>{{ cr.classe }}</td>
+                <td>{{ cr.debut|date('H:i') }}</td>
+                <td>{{ cr.fin|date('H:i') }}</td>
+                <td>{{ cr.heure }}</td>
+                <td class="text-right"  style="padding-right: 10px">
+                    {{ cr.taux|formatFr }}
+                </td>
+                <td class="text-right" style="padding-right: 10px">
+                    {{ cr.montant|formatFr }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">Pas de résultat</td>
+            </tr>
+        {% endfor %}
+        </tbody> #}
+
+    </table>
+    </div>
+     <div class="col-sm-3">
+      <table class="table table-bordered table-striped table-sm"
+           style="margin-top: 20px">
+
+        <thead class="bg-info text-white">
+        <tr>
+            <th colspan="2">Montant à payer</th>
+        </tr>
+        <tr>
+            <th>Cycle</th>
+            <th>Montant</th>
+        </tr>
+        </thead>
+        {% set totalEcartHeure = 0 %}
+        {% set totalEcartMontant = 0 %}
+        {% set totalExecute = 0 %}
+        {% set MontantExecuteDut = 0 %}
+        {% set MontantExecuteLicence = 0 %}
+        {% set MontantExecuteMaster = 0 %}
+        {% for cycle in ['DUT', 'LICENCE', 'MASTER'] %}
+            <tr>
+                {% for i in 1..4 %}
+                     {% set totalExecute = totalExecute + (executes[cycle][i] ?? 0) %}
+                {% endfor %}
+                    {% if cycle == 'DUT' %}
+                {% set MontantExecuteDut = totalExecute * 8000 %}
+                 <td>{{ cycle }}</td>
+                 <td class="text-nowrap">{{totalExecute}} x 8 000 = {{ MontantExecuteDut |number_format(0, ',', ' ')}} </td>
+                {% elseif cycle == 'LICENCE' %}
+                    {% set MontantExecuteLicence = totalExecute * 8000 %}
+                     <td>{{ cycle }}</td>
+                     <td class="text-nowrap">{{totalExecute}} x 8 000 = {{MontantExecuteLicence |number_format(0, ',', ' ')}} </td>
+                {% elseif cycle == 'MASTER' %}
+                    {% set MontantExecuteMaster = totalExecute * 10000 %}
+                     <td>{{ cycle }}</td>
+                     <td class="text-nowrap">{{totalExecute}} x 10 000 = {{MontantExecuteMaster |number_format(0, ',', ' ')}} </td>
+                {% endif %}
+               
+                {% set totalExecute = 0 %}
+            </tr>
+        {% endfor %}
+
+          <tfoot>
+        <tr>
+            <th>TOTAL :</th>
+            <th>{{ (MontantExecuteDut + MontantExecuteLicence + MontantExecuteMaster)|number_format(0, ',', ' ') }} F CFA</th>
+        </tr>
+        </tfoot>
+
+    </table>
+     </div>
+    
+   
+
+    
+    </div>
+
+
+{% endblock %}

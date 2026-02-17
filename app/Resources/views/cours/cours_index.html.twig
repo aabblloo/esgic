@@ -1,0 +1,199 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}
+{{ titre }}
+{% endblock %}
+
+{% block titre %}
+{{ titre }}
+{% endblock %}
+
+{% block body %}
+
+<div class="breadcrumb">
+    <a href="{{ path('cours_new') }}" class="btn btn-link">
+        <i class="fa  fa-chalkboard-teacher"></i>
+        Enregistrer un cours
+    </a>
+    <button  class="btn btn-link" id="export">
+        <i class="fa fa-file-excel"></i>
+        Exporter en Excel
+    </button>
+</div>
+
+<div class="row align-items-center justify-content-center"
+style="margin-bottom: 20px">
+<div class="col-12">
+    {{ form_start(form) }}
+    <div class="row">
+        
+        <div class="col-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">Professeur</span>
+                </div>
+                {{ form_widget(form.prof) }}
+            </div>
+        </div>
+        
+        <div class="col-3">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">Site</span>
+                </div>
+                {{ form_widget(form.site) }}
+            </div>
+        </div>
+        
+        <div class="col-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">du</span>
+                </div>
+                {{ form_widget(form.debut) }}
+            </div>
+        </div>
+        
+        <div class="col-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">au</span>
+                </div>
+                {{ form_widget(form.fin) }}
+            </div>
+        </div>
+        
+        <div class="col-1">
+            <button class="btn btn-success btn-block">OK</button>
+        </div>
+        
+    </div>
+    {{ form_end(form) }}
+</div>
+</div>
+
+<table id="myTable" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Matière</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th class="text-center">Nbre heure</th>
+            <th>Classe</th>
+            <th>Professeur</th>
+            <th>Site</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in cours %}
+        <tr>
+            <td>{{ c.date|dateFr }}</td>
+            <td>{{ c.matiere.code }}</td>
+            <td>{{ c.debut|date('H:i') }}</td>
+            <td>{{ c.fin|date('H:i') }}</td>
+            <td class="text-center">{{ c.nbreHeure }}</td>
+            <td>{{ c.classe.code }}</td>
+            <td>{{ c.prof.prenomNom }}</td>
+            <td>{{ c.site }}</td>
+            <td class="text-right">
+                <a href="{{ path('cours_edit', {'id': c.id}) }}" class="btn btn-link py-0">
+                    <i class="fa  fa-edit"></i>
+                    Modifier
+                </a>
+                <a href="{{ path('cours_delete', {'id': c.id}) }}" class="btn btn-link py-0 text-danger">
+                    <i class="fa  fa-trash-alt "></i>
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>Total Heure</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-center">{{ nbre_heure }}</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}">
+<link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+<script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+<script>
+    $(function () {
+        $("#autre").addClass("active");
+        $("#cours_index").addClass("active");
+        
+        $(".chosen-select").chosen({
+            allow_single_deselect: true,
+            no_results_text: "Option non trouvée !",
+            disable_search_threshold: 10,
+            //width: "74%",
+            inherit_select_classes: true
+        });
+        
+        $('#myTable').DataTable({
+            order: [],
+        });
+        
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var table = $('#myTable').DataTable();
+        $('#export').on('click', function() {
+            var data = table.rows().data().toArray();
+            data = data.map(function(row) {
+                row.pop();
+                return row;
+            });
+            // Get the headers
+            var headers = [];
+            $('#myTable thead th').each(function() {
+                headers.push($(this).text());
+            });
+            
+            // Remove the last header
+            headers.pop();
+            
+            // Prepend headers to the data array
+            data.unshift(headers);
+            $.ajax({
+                url: '/cours/export',
+                method: 'POST',
+                data: { data: JSON.stringify(data) },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(data) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'cours.xlsx';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url); 
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

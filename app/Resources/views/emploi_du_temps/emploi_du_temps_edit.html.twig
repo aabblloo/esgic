@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <input type="hidden" id="emploi_id" name="emploi_id">
+
+    <div class="row">  
+
+        <div class="col-4">
+            <table class="table table-borderless table-hover">
+                <tbody>
+                <tr>
+                    <td style="width: 40%"></td>
+                    <td></td>
+                </tr>
+                {{ form_row(form.site) }}
+                {{ form_row(form.anScolaire) }}
+                {{ form_row(form.semaine) }}
+                {{ form_row(form.exam) }}
+                
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-4">
+            <table class="table table-borderless table-hover">
+                <tbody>
+                <tr>
+                    <td style="width: 40%"></td>
+                    <td></td>
+                </tr>
+                {{ form_row(form.classe) }}
+                {{ form_row(form.prof) }}
+                {{ form_row(form.matiere) }}
+                
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-4">
+            <table class="table table-borderless table-hover">
+                <tbody>
+                <tr>
+                    <td style="width: 40%"></td>
+                    <td></td>
+                </tr>
+                {{ form_row(form.jour) }}
+                 {{ form_row(form.debut) }}
+                {{ form_row(form.fin) }}
+                <tr>
+                    <td></td>
+                    <td>
+                        <button class="btn  btn-primary" id="btn-save">
+                            <i class="fa  fa-save"></i>
+                            Enregister
+                        </button>
+                        <a href="{{ path('emploi_du_temps_index') }}" class="btn 
+                        btn-primary">
+                            <i class="fa  fa-arrow-left"></i>
+                            Annuler
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    {{ form_end(form) }}
+
+    <div class="card">
+<table id="myTable" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Site</th>
+            <th>Classe</th>
+            <th>Annee</th>
+            <th>Prof</th>
+            <th>Matiere</th>
+            <th>Jour</th>
+            <th>Heure</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="list_emploi">
+    </tbody> 
+</table>
+    </div>
+
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css"
+          href="{{ asset('chosen/chosen.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('DataTables/datatables.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+    <script src="{{ asset('DataTables/datatables.min.js') }}"></script>
+
+    <script>
+    $( document ).ready(function() {
+            chargerList();
+            $("#appbundle_emploi_du_temps_site").attr('disabled', true);
+            $("#appbundle_emploi_du_temps_anScolaire").attr('disabled', true);
+             $("#appbundle_emploi_du_temps_semaine").attr('disabled', true);
+            $("#appbundle_emploi_du_temps_classe").attr('disabled', true);
+
+            $('<input>').attr({type: 'hidden',
+                                name: $('#appbundle_emploi_du_temps_site').attr('name'), // Use the same name as the select
+                                value: $('#appbundle_emploi_du_temps_site').val()         // Use the current value of the select
+            }).appendTo('form');
+
+            $('<input>').attr({type: 'hidden',
+                                name: $('#appbundle_emploi_du_temps_anScolaire').attr('name'), // Use the same name as the select
+                                value: $('#appbundle_emploi_du_temps_anScolaire').val()         // Use the current value of the select
+            }).appendTo('form');
+            $('<input>').attr({type: 'hidden',
+                                name: $('#appbundle_emploi_du_temps_classe').attr('name'), // Use the same name as the select
+                                value: $('#appbundle_emploi_du_temps_classe').val()         // Use the current value of the select
+            }).appendTo('form');
+
+            $('<input>').attr({type: 'hidden',
+                                name: $('#appbundle_emploi_du_temps_semaine').attr('name'), // Use the same name as the select
+                                value: $('#appbundle_emploi_du_temps_semaine').val()         // Use the current value of the select
+            }).appendTo('form');
+    });
+    
+
+        $(function () {
+            var attr = $("#autre").attr("class");
+            $("#autre").attr("class", attr + " active");
+            attr = $("#emploi_du_temps").attr("class");
+            $("#emploi_du_temps").attr("class", attr + " active");
+
+            $(".chosen-select").chosen({
+                allow_single_deselect: true,
+                no_results_text: "Option non trouvée !",
+                //disable_search_threshold: 10,
+                //width: "74%",
+                //inherit_select_classes: true
+            });
+        });
+
+        function nbreHeure() {
+            $("#appbundle_cours_nbreHeure").val(
+                $("#appbundle_cours_fin").val() - $("#appbundle_cours_debut").val()
+            )
+        }
+
+        function chargerList(){
+                var formData = $("form").serialize();
+
+            $.ajax({
+                url: '/emploidutemps/list',
+                method: 'POST',
+                data: formData ,
+                success: function(response) {
+                    console.log(response)
+                    // Clear the existing table body
+            $('#list_emploi').empty();
+
+            // Populate the table with the returned data
+            response.forEach(function(emploi) {
+                var tr_class='';
+                    if(emploi.exam==1){
+                        tr_class='table-danger'
+                    }
+                var deletePath = "{{ path('emploi_du_temps_delete', {'id': 'REPLACE_ID'}) }}";
+                $('#list_emploi').append('<tr class="'+tr_class+'"><td>' + emploi.site + '</td><td>' + emploi.classe  +  '</td><td>'+emploi.anSco +'</td><td>'+emploi.prof +'</td><td>'+emploi.matiere +'</td><td>'+emploi.jour +'</td><td>' +emploi.heure+'</td><td><a href="' + deletePath.replace('REPLACE_ID', emploi.id) + '"  class="btn btn-link py-0 text-danger"><i class="fa  fa-trash-alt "></i>Supprimer</a> <a href="#" onclick="modifierEmploi(' + emploi.id + ')"  class="btn btn-link py-0 text-primary"><i class="fa  fa-edit "></i>Modifier</a> </td></tr>');
+            });
+                }
+            });
+
+        }
+
+        function modifierEmploi(id) {
+
+            var modifierPath = "{{ path('emploi_du_temps_get', {'id': 'REPLACE_ID'}) }}";
+            modifierPath = modifierPath.replace('REPLACE_ID', id);
+
+            $.ajax({
+                url: modifierPath,
+                method: 'GET',
+                success: function(data) {
+                    console.log(data.debut, data.fin, data.id);
+
+                    // remplir le formulaire
+                    $('#appbundle_emploi_du_temps_prof').val(data.prof).trigger('chosen:updated');
+                    $('#appbundle_emploi_du_temps_matiere').val(data.matiere).trigger('chosen:updated');
+                    $('#appbundle_emploi_du_temps_jour').val(data.jour).trigger('chosen:updated');
+                    $('#appbundle_emploi_du_temps_debut').val(data.debut);
+                    $('#appbundle_emploi_du_temps_fin').val(data.fin);
+                    $('#appbundle_emploi_du_temps_exam').prop('checked', data.exam === true || data.exam === 1);
+
+                    // stocker l'id à modifier
+                    $('#emploi_id').val(data.id);
+
+
+                    // changer le bouton
+                    $('#btn-save').text('Mettre à jour');
+                }
+            });
+        }
+
+
+
+        
+    </script>
+{% endblock %}

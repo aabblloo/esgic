@@ -1,0 +1,110 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}
+    FICHE DE PAIEMENT
+{% endblock %}
+
+{% block body %}
+
+    <p class="small">
+        BPE : 4895-torokorobougou Bamako République du Mali<br/>
+        NIF : 085104084Y<br/>
+        Tél. : 79 17 83 78 / 66 74 28 80<br/>
+    </p>
+
+    <h3 class="text-center_">REÇU DE PAIEMENT N°
+        {{ autre_paiement.id|zeroFill }}
+    </h3>
+
+    <div class="row">
+        <div class="col-10">
+            <table class="table table-borderless table-sm" style="margin-top: 20px; margin-left: -5px;">
+
+                <tbody class="value">
+                <tr>
+                    <th>Matricule</th>
+                    <td>{{ autre_paiement.etudiant.matricule }}</td>
+                </tr>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ autre_paiement.etudiant.nom }}</td>
+                    <td>&nbsp</td>
+                    <th>Prénom</td>
+                    <td>{{ autre_paiement.etudiant.prenom }}</td>
+                </tr>
+                <tr>
+                    <th>Année académique</th>
+                    <td>{{ autre_paiement.anScolaire.nom }}</td>
+                    <td>&nbsp;</td>
+                    <th>Classe</th>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ autre_paiement.date|dateFr }}</td>
+                    <td>&nbsp;</td>
+                    <th>Référence</th>
+                    <td>{{ autre_paiement.ref }}</td>
+                </tr>
+                <tr>
+                    <th>Date saisie</th>
+                    <td>{{ autre_paiement.createAt ? autre_paiement.createAt | date('d/m/Y H:i') : '' }}</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Montant versé</th>
+                    <td>
+                        {{ autre_paiement.montant|formatFr }}
+                        F CFA
+                    </td>
+                    <td>&nbsp;</td>
+                    <th>Mode d’opération</th>
+                    <td>
+                        {{ autre_paiement.modeOperation }}
+                        {# autre_paiement.banque.nom #}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Montant en lettre</th>
+                    <td colspan="4">
+                        <span id="nbre-lettre"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <p class="mb-5">
+        Le Comptable
+
+        <span class="float-right">
+            <small>
+                Imprimer le :
+                {{ ''|date('d-m-Y à H:i') }}
+                par :
+                {{ app.user.name }}
+
+                {% if autre_paiement.userCreate %}
+                    -
+                    {{ autre_paiement.userCreate }}
+                {% elseif autre_paiement.userUpdate %}
+                    -
+                    {{ autre_paiement.userUpdate }}
+                {% else %}
+                {% endif %}
+            </small>
+        </span>
+    </p>
+
+    <p class="mt-5"></p>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ absolute_url(asset('js/nombre_en_lettre.js')) }}"></script>
+
+    <script>
+        $(function () {
+            $('#nbre-lettre').html(NumberToLetter({{ autre_paiement.montant }}) + ' F CFA');
+        })
+    </script>
+{% endblock %}

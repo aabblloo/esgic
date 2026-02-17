@@ -1,0 +1,63 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}liste de paiement des frais de soutenance{% endblock %}
+
+{% block body %}
+    <h5>liste de paiement des frais de soutenance</h5>
+    {% if search.classe is not null %}
+    <h6>
+        Classe :
+        <span class="value">{{ search.classe.code }}</span>
+    </h6>
+    {% endif %}
+
+    <h6>
+        Année scolaire :
+        <span class="value">{{ search.anScolaire.nom }}</span>
+    </h6>
+
+    <h6>
+        Nombre :
+        <span class="value">{{ paiements | length }}</span>
+    </h6>
+
+    {% if search.site is not null %}
+        <h6>
+            Site :
+            <span class="value">{{ search.site.nom }}</span>
+        </h6>
+    {% endif %}
+
+    <table class="table table-bordered table-striped table-sm" style="margin-top: 20px">
+
+        <thead class="bg-info text-white">
+        <th style="width: 15%;">Prénom</th>
+        <th style="width: 15%;">Nom</th>
+        <th style="width: 15%;">Matricule</th>
+        <th style="width: 20%;">Classe</th>
+        <th style="width: 10%;">mode de paiement</th>
+        <th style="width: 15%;">date de paiement</th>
+        <th style="width: 10%;">Montant</th>
+        </thead>
+
+        <tbody class="value">
+
+        {% for p in paiements %}
+            <tr>
+                <td>{{ p.prenom }}</td>
+                <td>{{ p.nom}}</td>
+                <td>{{ p.matricule }}</td>
+                <td>{{ p.classe }}</td>
+                <td>{{ p.modeOperation }}</td>
+                <td>{{ p.date |dateFr  }}</td>
+                <td class="text-right">{{ p.montant|formatFr }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Pas de résultat</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

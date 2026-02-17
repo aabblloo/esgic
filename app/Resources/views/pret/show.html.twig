@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+{% form_theme remb_form 'default/form_theme.html.twig' %}
+
+{% block title %}
+{{ titre }}
+{% endblock %}
+
+{% block titre %}
+{{ titre }}
+{% endblock %}
+
+{% block body %}
+
+<div class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0 " href="{{ path('pret_index') }}">
+            <i class="fa fa-list-alt"></i>
+            Liste des prêts
+        </a>
+    </li>
+    {% if pret.isSolder == false %}
+    <li class="breadcrumb-item">
+        <a class="btn btn-link py-0 " href="{{ path('pret_edit', {'id': pret.id}) }}">
+            <i class="fa fa-edit"></i>
+            Editer
+        </a>
+    </li>
+    <li class="breadcrumb-item">
+        {{ form_start(delete_form) }}
+        <button class="btn btn-link py-0  text-danger">
+            <i class="fa fa-trash-alt"></i>
+            Supprimer
+        </button>
+        {{ form_end(delete_form) }}
+    </li>
+    {% endif %}
+
+</div>
+
+<table class="table table-borderless col-md-4">
+    <tbody>
+        <tr>
+            <th>Date</th>
+            <td>
+                {{ pret.date|dateFr }}
+            </td>
+        </tr>
+        <tr>
+            <th>Montant</th>
+            <td>{{ pret.montant|number_format(0, ',', ' ') }}</td>
+        </tr>
+        <tr>
+            <th>Payé</th>
+            <td class="text-success">{{ pret.totalRemboursement|number_format(0, ',', ' ') }}</td>
+        </tr>
+        <tr>
+            <th>Reste à payer</th>
+            <td class="text-danger">
+                {{ (pret.montant - pret.totalRemboursement)|number_format(0, ',', ' ') }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h5>Remboursements</h5>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th style="width: 20%;">Date</th>
+            <th style="width: 20%;">Montant</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for remboursement in remboursements %}
+        <tr>
+            <td>{{ remboursement.date|dateFr }}</td>
+            <td class="text-right">{{ remboursement.montant|number_format(0, ',', ' ') }}</td>
+            <td class="text-right">
+                {% if pret.isSolder == false %}
+                {% include "remboursement/_delete_form.html.twig" %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <tfoot>
+        <tr>
+            <th>Total</th>
+            <th class="text-right">{{ pret.totalRemboursement|number_format(0, ',', ' ') }}</th>
+            <th></th>
+        </tr>
+
+        {% if pret.isSolder == false %}
+        <tr class="bg-secondary">
+            {{ form_start(remb_form) }}
+            <td>
+                {{ form_widget(remb_form.date) }}
+                {{ form_errors(remb_form.date) }}
+            </td>
+            <td>
+                {{ form_widget(remb_form.montant) }}
+                {{ form_errors(remb_form.montant) }}
+            </td>
+            <td>
+                <button class="btn btn-primary">Enregistrer</button>
+            </td>
+            {{ form_end(remb_form) }}
+        </tr>
+        {% endif %}
+
+    </tfoot>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(function () {
+        $('#autre').addClass('active');
+        $('#pret_index').addClass('active');
+    });
+</script>
+{% endblock %}

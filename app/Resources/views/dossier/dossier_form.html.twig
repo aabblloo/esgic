@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+    <span class="small">pour
+        {{ personne.prenomNom }}</span>
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="row">
+        <div class="col-4">
+            <table class="table table-borderless table-hover">
+                <tr>
+                    <td style="width: 40%"></td>
+                    <td></td>
+                </tr>
+                {{ form_row(form.nom) }}
+                {{ form_row(form.file) }}
+                <tr>
+                    <td></td>
+                    <td>
+                        <button class="btn btn-primary ">
+                            <i class="fa  fa-save"></i>
+                            Enregistrer
+                        </button>
+
+                        {% if dossier.etudiant %}
+                            {% set url = path('etudiant_show', {'id': personne.id}) %}
+                            {% if dossier.id is not null %}
+                                {% set url = path('dossier_new', {
+                                    'id': personne.id,
+                                    'type': 'e'
+                                }) %}
+                            {% endif %}
+                        {% else %}
+                            {% set url = path('prof_show', {'id': personne.id}) %}
+                            {% if dossier.id is not null %}
+                                {% set url = path('dossier_new', {
+                                    'id': personne.id,
+                                    'type': 'p'
+                                }) %}
+                            {% endif %}
+                        {% endif %}
+
+                        <a href="{{ url }}" class="btn btn-primary ">
+                            <i class="fa  fa-arrow-left"></i>
+                            Annuler
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        {% if dossiers is defined %}
+            <div class="col-6">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Dossiers</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for doss in dossiers %}
+                        <tr>
+                            <td>{{ doss.nom }}</td>
+                            <td class="text-right">
+                                <a href="{{ path('dossier_edit', {'id': doss.id}) }}" class="btn btn-link py-0">
+                                    <i class="fa  fa-edit"></i>
+                                    Modifier
+                                </a>
+                                <a href="{{ path('dossier_delete', {'id': doss.id}) }}" class="btn btn-link py-0">
+                                    <i class="fa  fa-trash-alt text-danger"></i>
+                                    Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $('#etudiant_index').addClass('active');
+
+            $(".chosen-select").chosen({
+                allow_single_deselect: true,
+                no_results_text: "Option non trouvée !",
+                //width: "100%",
+            });
+
+        });
+    </script>
+{% endblock %}

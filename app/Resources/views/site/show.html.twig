@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% set titre = 'Suppression du site' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-md-4">
+            <table class="table table-borderless table-hover">
+                <tbody>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ site.nom }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        {{ form_start(delete_form) }}
+                        <button class="btn btn-danger" onclick="return(confirm('Voulez-vous supprimer ce site ?'));">
+                            Supprimer
+                        </button>
+                        {{ form_end(delete_form) }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function () {
+            $('#admin').addClass('active');
+            $('#site_index').addClass('active');
+        });
+    </script>
+{% endblock %}

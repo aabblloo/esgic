@@ -1,0 +1,487 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use DateTime;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
+/**
+ * @ORM\Table(name="sf3_paiement")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PaiementRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @UniqueEntity(fields="ref", message="Cette référence existe déjà.")
+ */
+class Paiement
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     * @Assert\Date()
+     */
+    private $date;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $ref;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=0, options={"default":0})
+     * @Assert\NotBlank()
+     */
+    private $montant;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank()
+     */
+    private $modeOperation;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true, options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private $createAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true, options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private $updateAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnScolaire")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Valid()
+     */
+    private $anScolaire;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Etudiant")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Valid()
+     */
+    private $etudiant;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Banque")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\Valid()
+     */
+    private $banque;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="EtudiantClasse", inversedBy="paiements")
+     */
+    private $etudiantClasse;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $userCreate;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $userUpdate;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true, options={"default":"Scolarité"})
+     */
+    private $nature;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @Assert\NotBlank()
+     */
+    private $site;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     *
+     * @return Paiement
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set ref
+     *
+     * @param string $ref
+     *
+     * @return Paiement
+     */
+    public function setRef($ref)
+    {
+        $this->ref = $ref;
+
+        return $this;
+    }
+
+    /**
+     * Get ref
+     *
+     * @return string
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
+     * Set montant
+     *
+     * @param string $montant
+     *
+     * @return Paiement
+     */
+    public function setMontant($montant)
+    {
+        $this->montant = $montant;
+
+        return $this;
+    }
+
+    /**
+     * Get montant
+     *
+     * @return string
+     */
+    public function getMontant()
+    {
+        return $this->montant;
+    }
+
+    /**
+     * Set anScolaire
+     *
+     * @param \AppBundle\Entity\AnScolaire $anScolaire
+     *
+     * @return Paiement
+     */
+    public function setAnScolaire(\AppBundle\Entity\AnScolaire $anScolaire)
+    {
+        $this->anScolaire = $anScolaire;
+
+        return $this;
+    }
+
+    /**
+     * Get anScolaire
+     *
+     * @return \AppBundle\Entity\AnScolaire
+     */
+    public function getAnScolaire()
+    {
+        return $this->anScolaire;
+    }
+
+    /**
+     * Set etudiant
+     *
+     * @param \AppBundle\Entity\Etudiant $etudiant
+     *
+     * @return Paiement
+     */
+    public function setEtudiant(\AppBundle\Entity\Etudiant $etudiant)
+    {
+        $this->etudiant = $etudiant;
+
+        return $this;
+    }
+
+    /**
+     * Get etudiant
+     *
+     * @return \AppBundle\Entity\Etudiant
+     */
+    public function getEtudiant()
+    {
+        return $this->etudiant;
+    }
+
+    /**
+     * Set banque
+     *
+     * @param \AppBundle\Entity\Banque $banque
+     *
+     * @return Paiement
+     */
+    public function setBanque(\AppBundle\Entity\Banque $banque)
+    {
+        $this->banque = $banque;
+
+        return $this;
+    }
+
+    /**
+     * Get banque
+     *
+     * @return \AppBundle\Entity\Banque
+     */
+    public function getBanque()
+    {
+        return $this->banque;
+    }
+
+    /**
+     * Set etudiantClasse
+     *
+     * @param \AppBundle\Entity\EtudiantClasse $etudiantClasse
+     *
+     * @return Paiement
+     */
+    public function setEtudiantClasse(\AppBundle\Entity\EtudiantClasse $etudiantClasse = null)
+    {
+        $this->etudiantClasse = $etudiantClasse;
+
+        return $this;
+    }
+
+    /**
+     * Get etudiantClasse
+     *
+     * @return \AppBundle\Entity\EtudiantClasse
+     */
+    public function getEtudiantClasse()
+    {
+        return $this->etudiantClasse;
+    }
+
+    /**
+     * Set modeOperation
+     *
+     * @param string $modeOperation
+     *
+     * @return Paiement
+     */
+    public function setModeOperation($modeOperation)
+    {
+        $this->modeOperation = $modeOperation;
+
+        return $this;
+    }
+
+    /**
+     * Get modeOperation
+     *
+     * @return string
+     */
+    public function getModeOperation()
+    {
+        return $this->modeOperation;
+    }
+
+    public static function getModesOperations()
+    {
+        return ['Versement', 'Virement', 'Chèque', 'Espèce', 'Autres '];
+    }
+
+    /**
+     * Set createAt
+     *
+     * @param \DateTime $createAt
+     *
+     * @return Paiement
+     */
+    public function setCreateAt($createAt)
+    {
+        $this->createAt = $createAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createAt
+     *
+     * @return \DateTime
+     */
+    public function getCreateAt()
+    {
+        return $this->createAt;
+    }
+
+    /**
+     * Set updateAt
+     *
+     * @param \DateTime $updateAt
+     *
+     * @return Paiement
+     */
+    public function setUpdateAt($updateAt)
+    {
+        $this->updateAt = $updateAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updateAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdateAt()
+    {
+        return $this->updateAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function pre_persist()
+    {
+        $this->ref = $this->date->format('dmY') . '/' . $this->banque->getNom() . '/' . $this->ref;
+        $date = new DateTime();
+        $this->createAt = $date;
+        $this->updateAt = $date;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function pre_update()
+    {
+        $this->updateAt = new DateTime();
+    }
+
+    /**
+     * Set userCreate
+     *
+     * @param string $userCreate
+     *
+     * @return Paiement
+     */
+    public function setUserCreate($userCreate)
+    {
+        $this->userCreate = $userCreate;
+
+        return $this;
+    }
+
+    /**
+     * Get userCreate
+     *
+     * @return string
+     */
+    public function getUserCreate()
+    {
+        return $this->userCreate;
+    }
+
+    /**
+     * Set userUpdate
+     *
+     * @param string $userUpdate
+     *
+     * @return Paiement
+     */
+    public function setUserUpdate($userUpdate)
+    {
+        $this->userUpdate = $userUpdate;
+
+        return $this;
+    }
+
+    /**
+     * Get userUpdate
+     *
+     * @return string
+     */
+    public function getUserUpdate()
+    {
+        return $this->userUpdate;
+    }
+
+    /**
+     * Set nature
+     *
+     * @param string $nature
+     *
+     * @return Paiement
+     */
+    public function setNature($nature)
+    {
+        $this->nature = $nature;
+
+        return $this;
+    }
+
+    /**
+     * Get nature
+     *
+     * @return string
+     */
+    public function getNature()
+    {
+        return $this->nature;
+    }
+
+    public static function getNatures()
+    {
+        return ['Scolarité', 'Tenue', 'Frais administratifs', 'Frais de session','Frais de soutenance'];
+    }
+
+    /**
+     * Set site
+     *
+     * @param \AppBundle\Entity\Site $site
+     *
+     * @return Paiement
+     */
+    public function setSite(\AppBundle\Entity\Site $site = null)
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * Get site
+     *
+     * @return \AppBundle\Entity\Site
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+}

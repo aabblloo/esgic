@@ -1,0 +1,204 @@
+{% extends "base_print.html.twig" %}
+
+{% block title %}
+    Honoraire prof par période en detail
+{% endblock %}
+
+
+
+{% block body %}
+    <h5>Honoraire de : <span class="font-weight-bold">{{ search.prof.prenomNom }}</span></h5>
+
+    {# {{ dump(cours) }}
+    {{ dump(details) }}
+    {{ dump(detailsDeux) }} #}
+   
+    <h6>
+        Année scolaire :
+        <span class="value font-weight-bold">
+            {{ search.annee.nom }}
+        </span>
+    </h6>
+
+    <h6>
+        Du :
+        <span class="value font-weight-bold">
+            {{ search.debut|dateFr }}
+        </span>
+        Au :
+        <span class="value font-weight-bold">
+            {{ search.fin|dateFr }}
+        </span>
+    </h6>
+
+    <table class="table table-bordered table-striped table-sm"
+           style="margin-top: 20px">
+
+        <thead class="bg-info text-white">
+            <th>Prenom & Nom</th>
+            <th>Cycle</th>
+            <th>Siege</th>
+            <th>CFTP</th>
+            <th>MAIRIE</th>
+            <th>BADALA</th>
+            <th>DJELIBOUGOU</th>
+            <th>ANNEXE</th>
+            <th>TOROKORO</th>
+            <th>BRUT</th>
+            <th>NET</th>
+            <th>BANK</th>
+            <th>N° compte</th>
+        </thead>
+
+        {# <tfoot>
+        <tr>
+            <th colspan="7">Total</th>
+            <th class="value text-right"
+                style="padding-right: 10px">{{ total|formatFr }}
+            </th>
+        </tr>
+        </tfoot> #}
+
+        <tbody class="value">
+
+            <tr>
+                <td>{{ search.prof.prenomNom }}</td>
+
+                <td>
+
+                    DUT-LICENCE 
+                    <hr class='mt-0 mb-0'>
+                    MASTER
+                
+                </td>
+
+                <td>
+
+                    {% if detailsDeux['SIEGE'] is defined %}
+                        {{ detailsDeux['SIEGE'].licenceHeure }}h - {{ detailsDeux['SIEGE'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['SIEGE'].masterHeure }}h - {{ detailsDeux['SIEGE'].masterMontant }}
+                    {% endif %}   
+                
+                </td>
+                
+
+            
+
+                <td>
+
+                    {% if detailsDeux['CFTP'] is defined %}
+                        {{ detailsDeux['CFTP'].licenceHeure }}h - {{ detailsDeux['CFTP'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['CFTP'].masterHeure }}h - {{ detailsDeux['CFTP'].masterMontant }}
+                    {% endif %}   
+                
+                </td>
+                
+
+            
+
+                <td>
+
+                    {% if detailsDeux['MAIRIE'] is defined %}
+                        {{ detailsDeux['MAIRIE'].licenceHeure }}h - {{ detailsDeux['MAIRIE'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['MAIRIE'].masterHeure }}h - {{ detailsDeux['MAIRIE'].masterMontant }}
+                    {% endif %}   
+                
+                </td>
+                
+
+                <td>
+
+                    {% if detailsDeux['BADALA'] is defined %}
+                        {{ detailsDeux['BADALA'].licenceHeure }}h - {{ detailsDeux['BADALA'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['BADALA'].masterHeure }}h - {{ detailsDeux['BADALA'].masterMontant }}
+                    {% endif %}   
+            
+                </td>
+                
+
+            
+                <td>
+
+                    {% if detailsDeux['DJELIBOUGOU'] is defined %}
+                        {{ detailsDeux['DJELIBOUGOU'].licenceHeure }}h - {{ detailsDeux['DJELIBOUGOU'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['DJELIBOUGOU'].masterHeure }}h - {{ detailsDeux['DJELIBOUGOU'].masterMontant }}
+                    {% endif %}   
+            
+                </td>
+                
+
+                <td>
+
+                    {% if detailsDeux['ANNEXE'] is defined %}
+                        {{ detailsDeux['ANNEXE'].licenceHeure }}h - {{ detailsDeux['ANNEXE'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['ANNEXE'].masterHeure }}h - {{ detailsDeux['ANNEXE'].masterMontant }}
+                    {% endif %}   
+            
+                </td>
+
+                <td>
+
+                    {% if detailsDeux['TOROKORO'] is defined %}
+                        {{ detailsDeux['TOROKORO'].licenceHeure }}h - {{ detailsDeux['TOROKORO'].licenceMontant }}
+                        <hr class='mt-0 mb-0'>
+                        {{ detailsDeux['TOROKORO'].masterHeure }}h - {{ detailsDeux['TOROKORO'].masterMontant }}
+                    {% endif %}   
+            
+                </td>
+                
+
+                <td>
+                        {{ total }}
+                </td>
+                
+
+
+                <td>
+                        {{ total }}
+                </td>
+                
+
+
+                <td>
+                        {{ cours[0].banque }}
+                </td>
+                
+
+                <td>
+                       {{ cours[0].numcompt }}
+                </td>
+                
+
+                
+            
+
+
+
+
+
+
+
+
+                {# <td>{{ cr.matiere }}</td>
+                <td>{{ cr.classe }}</td>
+                <td>{{ cr.debut|date('H:i') }}</td>
+                <td>{{ cr.fin|date('H:i') }}</td>
+                <td>{{ cr.heure }}</td>
+                <td class="text-right"  style="padding-right: 10px">
+                    {{ cr.taux|formatFr }}
+                </td>
+                <td class="text-right" style="padding-right: 10px">
+                    {{ cr.montant|formatFr }}
+                </td> #}
+            </tr>
+
+        </tbody>
+
+    </table>
+{% endblock %}

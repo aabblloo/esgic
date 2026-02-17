@@ -1,0 +1,192 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+        AppBundle\Entity\Etudiant:
+            algorithm: bcrypt
+
+        AppBundle\Entity\Parents:
+            algorithm: bcrypt
+
+    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+        app_student_provider:
+            entity:
+                class: AppBundle:Etudiant
+                property: telephone
+
+        app_parent_provider:
+            entity:
+                class: AppBundle:Parents
+                property: telephone
+
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login_student_area:
+            pattern: ^/espace/etudiant/login$
+            anonymous: true
+
+        login_parent_area:
+            pattern: ^/espace/parent/login$
+            anonymous: true
+
+        login_area:
+            pattern: ^/login$
+            anonymous: true
+
+        student_space:
+            pattern: ^/espace/etudiant/
+            anonymous: false
+            form_login:
+                login_path: /espace/etudiant/login
+                check_path: /espace/etudiant/login_check
+                default_target_path: /espace/etudiant/
+            provider: app_student_provider
+            logout:
+                path: /espace/etudiant/logout
+                target: /espace/etudiant/login
+
+        parent_space:
+            pattern: ^/espace/parent/
+            anonymous: false
+            form_login:
+                login_path: /espace/parent/login
+                check_path: /espace/parent/login_check
+                default_target_path: /espace/parent/
+            provider: app_parent_provider
+            logout:
+                path: /espace/parent/logout
+                target: /espace/parent/login
+
+        secure_area:
+            pattern: ^/
+            anonymous: false
+            form_login: ~
+            provider: our_db_provider
+            logout:
+                path: /logout
+                target: /login
+            switch_user: true
+
+            # activate different ways to authenticate
+
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            #http_basic: ~
+
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            #form_login: ~                
+
+    role_hierarchy:
+        ROLE_EMPLOI_DU_TEMPS:       ROLE_USER
+        ROLE_SCOLARITE:             ROLE_USER
+        ROLE_PARENT:                ROLE_USER
+        ROLE_ETUDIANT:              ROLE_USER
+        ROLE_SAISIE:                ROLE_USER
+        ROLE_COMMUNICATION:         ROLE_USER
+        ROLE_RESP_PEDAGOGIE:        ROLE_USER
+        ROLE_RESPONSABLE:           ROLE_SAISIE
+        ROLE_SAISIE_CARTE:          ROLE_SAISIE
+        ROLE_RESP_SAISIE:           ROLE_SAISIE_CARTE
+        ROLE_DIRECTEUR:             [ROLE_RESPONSABLE, ROLE_ADMIN, ROLE_RESP_SAISIE, ROLE_RESP_PEDAGOGIE]
+        ROLE_SUP_DIRECTEUR:         ROLE_DIRECTEUR
+        ROLE_ADMIN:                 ROLE_DIRECTEUR
+        ROLE_SUPER_ADMIN:           [ROLE_SUP_DIRECTEUR, ROLE_RESP_SAISIE, ROLE_ALLOWED_TO_SWITCH]
+
+    access_control:
+        - { path: ^/espace/etudiant/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/espace/parent/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/utilisateur/changerMotPasse, roles: ROLE_USER }
+
+        - { path: ^/groupes, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/utilisateur/supprimer, roles: ROLE_SUPER_ADMIN }
+
+        - { path: ^/admin, roles: ROLE_SUPER_ADMIN }
+        - { path: ^/utilisateur, roles: ROLE_SUP_DIRECTEUR }
+
+        - { path: ^/etudiant/liste, roles: [ROLE_SAISIE, ROLE_COMMUNICATION, ROLE_SCOLARITE, ROLE_EMPLOI_DU_TEMPS] }
+        - { path: ^/etudiant/ajouter, roles: ROLE_SAISIE }
+        - { path: ^/etudiant/fiche, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE] }
+        - { path: ^/etudiant/rechercher, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE] }
+        - { path: ^/etudiant/classe/ajouter, roles: ROLE_SAISIE }
+        - { path: ^/etudiant/paiement/supprimer, roles: [ROLE_DIRECTEUR] }
+        - { path: ^/etudiant/paiement/modifier, roles: [ROLE_DIRECTEUR,ROLE_RESP_SAISIE ] }
+        - { path: ^/etudiant/paiement, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE] }
+        - { path: ^/paiement/ajouter, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE] }
+        - { path: ^/autre-paiement/ajouter, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE] }
+        - { path: ^/cours/ajouter, roles: ROLE_SAISIE }
+
+        - { path: ^/etudiant/modifier, roles: [ROLE_DIRECTEUR, ROLE_RESP_SAISIE,ROLE_RESPONSABLE ] }
+        - { path: ^/etudiant/supprimer, roles: ROLE_DIRECTEUR}
+        - { path: ^/etudiant/classe/modifier, roles: [ROLE_DIRECTEUR, ROLE_RESP_SAISIE, ROLE_RESPONSABLE] }
+        - { path: ^/etudiant/classe/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/dossier/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/dossier/, roles: ROLE_SAISIE }
+        - { path: ^/banque/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/classe/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/classe/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/matiere/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/anneeScolaire/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/anneeScolaire/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/cycle/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/filiere/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/suivi/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/suivi/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/professeur/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/professeur/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/profMatiere/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/cours/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/cours/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/paiement/modifier, roles: [ROLE_DIRECTEUR, ROLE_SCOLARITE ]}
+        - { path: ^/paiement/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/autre-paiement/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/autre-paiement/supprimer, roles: ROLE_DIRECTEUR }
+        - { path: ^/depense/modifier, roles: ROLE_DIRECTEUR }
+        - { path: ^/depense/supprimer, roles: ROLE_DIRECTEUR }
+
+        - { path: ^/banque, roles: ROLE_RESPONSABLE }
+        - { path: ^/classe/, roles: [ROLE_RESPONSABLE, ROLE_RESP_PEDAGOGIE]}
+        - { path: ^/matiere, roles: ROLE_RESPONSABLE }
+        - { path: ^/classeMatiere/modifier, roles: ROLE_RESPONSABLE}
+        - { path: ^/classeMatiere/supprimer, roles: ROLE_RESPONSABLE}
+        - { path: ^/classeMatiere, roles: [ROLE_RESPONSABLE, ROLE_RESP_PEDAGOGIE]}
+        - { path: ^/anneeScolaire, roles: ROLE_RESPONSABLE }
+        - { path: ^/cycle, roles: ROLE_RESPONSABLE }
+        - { path: ^/filiere, roles: ROLE_RESPONSABLE }
+        - { path: ^/etudiant, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE]}
+        - { path: ^/paiement, roles: [ROLE_SAISIE, ROLE_COMMUNICATION , ROLE_SCOLARITE] }
+        - { path: ^/autre-paiement, roles: ROLE_SAISIE }
+        - { path: ^/depense, roles: ROLE_RESPONSABLE }
+        - { path: ^/professeur, roles: [ROLE_RESPONSABLE, ROLE_SAISIE] }
+        - { path: ^/profMatiere, roles: ROLE_RESPONSABLE }
+        - { path: ^/cours, roles: [ROLE_RESPONSABLE, ROLE_SAISIE] }
+        - { path: ^/suivi, roles: ROLE_RESPONSABLE }
+        - { path: ^/etats, roles: ROLE_SAISIE }
+        - { path: ^/etat/liste_etudiants_par_classe$, roles: ROLE_SAISIE }
+        - { path: ^/etat/liste_paiements_entre_deux_dates$, roles: [ROLE_SAISIE, ROLE_SCOLARITE] }
+        - { path: ^/etat/liste_paie_soutenance$, roles: [ROLE_USER] }
+        - { path: ^/etat/liste_etudiants_par_classe_et_seuil, roles: ROLE_SAISIE }
+        - { path: ^/etat/liste_etudiants_par_classe_password, roles: ROLE_SAISIE }
+        - { path: ^/etat/paiement, roles: [ROLE_SAISIE, ROLE_SCOLARITE] }
+        - { path: ^/etat/autrepaiement, roles: ROLE_SAISIE }
+        - { path: ^/etat, roles: ROLE_RESPONSABLE }
+        - { path: ^/parent, roles: [ROLE_SAISIE, ROLE_COMMUNICATION] }
+        - { path: ^/bulletin, roles: [ROLE_RESPONSABLE, ROLE_PARENT] }
+        - { path: ^/autredocument, roles: ROLE_RESPONSABLE }
+        - { path: ^/lecon/edit, roles: ROLE_RESPONSABLE}
+        - { path: ^/lecon/delete, roles: ROLE_RESPONSABLE}
+        - { path: ^/lecon, roles: [ROLE_RESPONSABLE, ROLE_RESP_PEDAGOGIE] }
+        - { path: ^/, roles: ROLE_USER }

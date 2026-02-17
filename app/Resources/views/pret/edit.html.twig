@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'default/form_theme.html.twig' %}
+
+{% block title %}
+    {{ titre }}
+{% endblock %}
+
+{% block titre %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="btn btn-link py-0 px-0" href="{{ path('pret_show', {'id': pret.id}) }}">
+                <i class="fa fa-list-alt"></i>
+                Retour au prêt
+            </a>
+        </li>
+    </div>
+
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                {{ form_row(form.professeur) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.date) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_row(form.montant) }}
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary">Enregistrer</button>
+                <a href="{{ path('pret_show', {'id': pret.id}) }}" class="btn btn-primary">Annuler</a>
+            </div>
+        </div>
+    </div>
+
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+{% endblock %}
+
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.min.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('chosen/chosen.jquery.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $('#autre').addClass('active');
+            $('#pret_index').addClass('active');
+
+            $(".chosen-select").chosen({
+                allow_single_deselect: true, no_results_text: "Option non trouvée !",
+                //disable_search_threshold: 10,
+                width: "100%"
+            });
+        });
+    </script>
+{% endblock %}
