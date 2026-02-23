@@ -495,7 +495,6 @@ class EmploiDuTempsController extends Controller
                             // Point de départ : lundi de la semaine originale
                             $date = new \DateTime();
                             $date->setISODate($annee, $ancienneSemaine);
-                            var_dump($date); die;
                         }
                         
                         
